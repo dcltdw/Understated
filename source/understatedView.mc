@@ -9,7 +9,7 @@ import Toybox.Math;
 
 class UnderstatedView extends WatchUi.View {
     // Upright Roman numerals, index i -> the (i+1) o'clock mark.
-    private const NUMERALS = ["I", "II", "III", "IIII", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+    private const NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
 
     var mySettings;
     var last_theme = -1;
