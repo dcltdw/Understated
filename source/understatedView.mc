@@ -26,125 +26,88 @@ class UnderstatedView extends WatchUi.View {
     var hands_color;
     var battery_discharged_color;
 
-    // returns true on updated day, false otherwise
-    function check_for_day_advance(force as Boolean, _now as $.Toybox.Time.Gregorian.Info) {
-        //System.println("check day advance: force = " + force + ", colorTheme = " + mySettings.colorTheme);
-
-        // FIX ME: Force colorTheme 7 for now.
-        // Get the log off the watch and look at 
-        // https://forums.garmin.com/developer/connect-iq/f/discussion/231129/so-you-have-a-ciq_log-file-but-all-you-see-is-pc-without-a-friendly-stack-trace---what-to-do
-        
-        // FIX ME: restore this:
-        //if (mySettings.colorTheme != 7 and !force) {
-        //    return false;
-        //}
-        var target_theme = -1;
-
-        //System.println("now.day=" + _now.day + ", now.hour=" + _now.hour + ", now.min=" + _now.min + ", _now.dow=" + _now.day_of_week);
-        var switchTarget = _now.day_of_week;
-        // FIX ME : restore this
-        //if (force) {
-        //    if (mySettings.colorTheme != 7) {
-        //        target_theme = mySettings.colorTheme;
-        //    }
-        //}
-        if (target_theme == -1 ) {
-            switch (switchTarget) {
-                case "Sun":
-                    target_theme = 4;
-                    break;
-                case "Mon":
-                    target_theme = 0;
-                    break;
-                case "Tue":
-                    target_theme = 1;
-                    break;
-                case "Wed":
-                    target_theme = 2;
-                    break;
-                case "Thu":
-                    target_theme = 3;
-                    break;
-                case "Fri":
-                    target_theme = 6;
-                    break;
-                case "Sat":
-                    target_theme = 5;
-                    break;
+    // Resolves the active theme from the user's setting and loads the matching
+    // background, but only when the theme actually changes. colorTheme 0-6 pins
+    // a fixed color; colorTheme 7 ("Multi") rotates the color by day of week.
+    // Returns true when the rendered theme changed (caller should clear + redraw).
+    function check_for_day_advance(force as Boolean, _now as $.Toybox.Time.Gregorian.Info) as Boolean {
+        var target_theme;
+        if (mySettings.colorTheme == 7) {
+            // Multi: rotate the color by day of week.
+            switch (_now.day_of_week) {
+                case "Sun": target_theme = 4; break;
+                case "Mon": target_theme = 0; break;
+                case "Tue": target_theme = 1; break;
+                case "Wed": target_theme = 2; break;
+                case "Thu": target_theme = 3; break;
+                case "Fri": target_theme = 6; break;
+                case "Sat": target_theme = 5; break;
+                default:    target_theme = 0; break;
             }
+        } else {
+            // Fixed color chosen in Settings.
+            target_theme = mySettings.colorTheme;
         }
 
-        //System.println("check day advance: target_theme = " + target_theme + ", switchTarget = " + switchTarget);
+        // Nothing changed since the last render: keep the cached background.
+        if (!force and target_theme == last_theme) {
+            return false;
+        }
+
         switch (target_theme) {
             case 0:
                 background_bitmap = WatchUi.loadResource(BG_BLUE) as BitmapResource;
-                // background_color = Graphics.COLOR_BLUE;
-                // numerals_color = Graphics.COLOR_LT_GRAY;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_ORANGE;
                 break;
-            case 1: 
+            case 1:
                 background_bitmap = WatchUi.loadResource(BG_GREEN) as BitmapResource;
-                // background_color = Graphics.COLOR_GREEN;
-                // numerals_color = Graphics.COLOR_LT_GRAY;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_DK_BLUE;
                 break;
             case 2:
                 background_bitmap = WatchUi.loadResource(BG_PURPLE) as BitmapResource;
-                // background_color = Graphics.COLOR_PURPLE;
-                // numerals_color = Graphics.COLOR_LT_GRAY;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_BLUE;
                 break;
             case 3:
                 background_bitmap = WatchUi.loadResource(BG_RED) as BitmapResource;
-                // background_color = Graphics.COLOR_RED;
-                // numerals_color = Graphics.COLOR_YELLOW;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_GREEN;
                 break;
             case 4:
                 background_bitmap = WatchUi.loadResource(BG_YELLOW) as BitmapResource;
-                // background_color = Graphics.COLOR_YELLOW;
-                // numerals_color = Graphics.COLOR_BLACK;
                 date_color = Graphics.COLOR_BLACK;
                 hands_color = Graphics.COLOR_BLACK;
                 battery_discharged_color = Graphics.COLOR_RED;
                 break;
             case 5:
                 background_bitmap = WatchUi.loadResource(BG_BLACK_GOLD) as BitmapResource;
-                // background_color = Graphics.COLOR_BLACK;
-                // numerals_color = Graphics.COLOR_YELLOW;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_PINK;
                 break;
             case 6:
                 background_bitmap = WatchUi.loadResource(BG_BLACK_SILVER) as BitmapResource;
-                // background_color = Graphics.COLOR_BLACK;
-                // numerals_color = Graphics.COLOR_LT_GRAY;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_ORANGE;
                 break;
-            default: // error recovery
+            default: // invalid colorTheme: recover to Blue and persist the fix
                 System.println("error in View!  target_theme = " + target_theme);
                 mySettings.colorTheme = 0;
                 mySettings.saveLocal();
+                target_theme = 0;
                 background_bitmap = WatchUi.loadResource(BG_BLUE) as BitmapResource;
-                // background_color = Graphics.COLOR_DK_BLUE;
-                // numerals_color = Graphics.COLOR_LT_GRAY;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_ORANGE;
         }
-        last_theme = mySettings.colorTheme;
-        //System.println("reload_settings: colorTheme = " + mySettings.colorTheme);
+        last_theme = target_theme;
 
         return true;
     }
