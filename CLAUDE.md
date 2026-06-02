@@ -73,6 +73,29 @@ covering the *discharged* fraction of the battery is drawn in
 `hands_color`. So a full battery shows a full-color hour hand, and the accent
 color grows as the battery drains.
 
+## Multi-device, power modes, and second hand
+
+The manifest targets ~78 watch-face-capable MIP + AMOLED devices (Instinct
+excluded). Because the dial is programmatic, the same code scales to every
+size/shape/color-depth.
+
+Power modes are tracked with `isLowPower` (set in `onEnterSleep`/`onExitSleep`)
+and `burnInProtect` (cached from `getDeviceSettings().requiresBurnInProtection`):
+
+- **High power** (awake): `onUpdate` runs ~1/sec, so the full dial draws plus a
+  second hand (`drawSecondHand`, theme accent color), gated by `!isLowPower`.
+- **Low power, MIP** (`burnInProtect == false`): full dial, no second hand
+  (`onUpdate` is ~1/min, so a second hand would freeze).
+- **Low power, AMOLED** (`burnInProtect == true`): `drawLowPower` renders a
+  burn-in-safe frame — black background, thin hands, small date, shifted a
+  couple pixels each minute.
+
+`onPartialUpdate` stays a no-op (its absence caused a low-power crash on fr55);
+all real drawing happens in `onUpdate`.
+
+Build for all targets / sweep with SDK 9.1.0 (`-d <device>` per manifest entry;
+the `.iq` export `-e` builds every product at once).
+
 ## AI-collaboration conventions
 
 This repo follows a subset of

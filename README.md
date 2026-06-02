@@ -5,18 +5,23 @@ battery gauge, over a Roman-numeral dial in one of seven solid colors.
 
 ## Features
 
-- **Analog time** — hour and minute hands (minute resolution; no second hand).
+- **Analog time** — hour and minute hands, plus a second hand while the watch
+  is awake (hidden in low power to save battery / avoid AMOLED burn-in).
 - **Battery-as-hour-hand** — the "discharged" portion of the hour hand is drawn
   in a separate accent color, so the hand fills back up as the watch charges.
 - **Date** — day-of-month, drawn to the right of center.
 - **Color themes** — pick a fixed color, or "Multi" to rotate the color by day
   of week. See [CLAUDE.md](CLAUDE.md) for the theme/day mapping.
+- **AMOLED always-on** — on burn-in-protected displays, low power draws a
+  mostly-black screen with thin hands and a small date, shifted over time.
 
-## Supported device
+## Supported devices
 
-Targets the Garmin **Forerunner 55 (`fr55`)**. The dial (background fill plus
-Roman numerals) is drawn programmatically, so it scales to any screen size or
-shape — adding more devices is a manifest change, not new artwork.
+Targets most current Garmin watches — MIP and AMOLED, round and rectangular
+(see `manifest.xml`). The dial (background fill plus Roman numerals) is drawn
+programmatically, so it scales to any screen size, shape, and color depth;
+adding more devices is a manifest change, not new artwork. Instinct
+(monochrome) is intentionally excluded.
 
 ## Build
 

@@ -18,6 +18,8 @@ class UnderstatedView extends WatchUi.View {
     var date_color;
     var hands_color;
     var battery_discharged_color;
+    var isLowPower = false;       // true while the watch is in low-power (sleep) mode
+    var burnInProtect = false;    // device requires AMOLED burn-in protection
 
     // Resolves the active theme from the user's setting and sets the matching
     // colors, but only when the theme actually changes. colorTheme 0-6 pins
@@ -120,6 +122,7 @@ class UnderstatedView extends WatchUi.View {
     function initialize() {
         View.initialize();
         mySettings = new UnderstatedSettings();
+        burnInProtect = (System.getDeviceSettings().requiresBurnInProtection == true);
         var _now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
         check_for_day_advance(true, _now);
     }
@@ -147,6 +150,12 @@ class UnderstatedView extends WatchUi.View {
         var _now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
         check_for_day_advance(false, _now);
 
+        if (isLowPower and burnInProtect) {
+            // AMOLED always-on: burn-in-safe minimal render.
+            drawLowPower(dc, _now);
+            return;
+        }
+
         drawBackground(dc);
 
         var _hour = _now.hour;
@@ -155,6 +164,13 @@ class UnderstatedView extends WatchUi.View {
 
         drawDate(dc, _dateString);
         drawHands(dc, _hour, _minute);
+
+        // Second hand only while awake. In high power onUpdate runs ~1/sec so it
+        // ticks; in low power onUpdate is ~1/min (it would freeze) and AMOLED uses
+        // the burn-in-safe path above, so it's intentionally omitted there.
+        if (!isLowPower) {
+            drawSecondHand(dc, _now.sec);
+        }
     }
 
     // Some devices/firmware (incl. fr55) invoke onPartialUpdate during
@@ -173,12 +189,14 @@ class UnderstatedView extends WatchUi.View {
 
     // The user has just looked at their watch. Timers and animations may be started here.
     function onExitSleep() as Void {
-        return;
+        isLowPower = false;
+        WatchUi.requestUpdate();
     }
 
     // Terminate any active timers and prepare for slow updates.
     function onEnterSleep() as Void {
-        return;
+        isLowPower = true;
+        WatchUi.requestUpdate();
     }
 
     // Draws the dial programmatically: a solid fill plus 12 upright Roman
@@ -204,6 +222,54 @@ class UnderstatedView extends WatchUi.View {
             dc.drawText(x, y, Graphics.FONT_TINY, NUMERALS[i],
                 Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
         }
+    }
+
+    // AMOLED always-on (burn-in protection): a mostly-black screen with only a
+    // few lit pixels (thin hands + small date), nudged a couple pixels on a slow
+    // cycle so nothing stays static. Used only when the device requires it.
+    function drawLowPower(dc as Dc, _now as $.Toybox.Time.Gregorian.Info) as Void {
+        var width = dc.getWidth();
+        var height = dc.getHeight();
+
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
+        dc.clear();
+
+        var shiftX = (_now.min % 3) - 1;
+        var shiftY = ((_now.min / 3) % 3) - 1;
+        var ox = width / 2 + shiftX;
+        var oy = height / 2 + shiftY;
+
+        var hour = _now.hour;
+        var minute = _now.min;
+        if (hour > 12) {
+            hour -= 12;
+        }
+        var adjusted_hour = hour + minute.toFloat() / 60;
+        var minTheta = (15 - minute) * 6 * Math.PI / 180;
+        var hourTheta = (3 - adjusted_hour) * 30 * Math.PI / 180;
+        var minLen = width * 0.38;
+        var hourLen = width * 0.23;
+
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.setPenWidth(1);
+        dc.drawLine(ox, oy, ox + Math.cos(minTheta) * minLen, oy - Math.sin(minTheta) * minLen);
+        dc.drawLine(ox, oy, ox + Math.cos(hourTheta) * hourLen, oy - Math.sin(hourTheta) * hourLen);
+
+        dc.drawText(width * 0.81 + shiftX, height * 0.43 + shiftY, Graphics.FONT_XTINY,
+            Lang.format("$1$", [_now.day]), Graphics.TEXT_JUSTIFY_CENTER);
+    }
+
+    // Thin second hand in the theme accent color, slightly longer than the
+    // minute hand. Drawn only in high power (see onUpdate).
+    function drawSecondHand(dc as Dc, sec as Number) as Void {
+        var width = dc.getWidth();
+        var height = dc.getHeight();
+        var theta = (15 - sec) * 6 * Math.PI / 180;
+        var len = width * 0.42;
+        dc.setColor(battery_discharged_color, Graphics.COLOR_TRANSPARENT);
+        dc.setPenWidth(1);
+        dc.drawLine(width / 2, height / 2,
+            width / 2 + Math.cos(theta) * len, height / 2 - Math.sin(theta) * len);
     }
 
     function drawDate(dc as Dc, dateString as String) as Void {
