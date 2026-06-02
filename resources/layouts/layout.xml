@@ -1,3 +1,4 @@
+<!-- The date and hands are drawn directly in UnderstatedView.onUpdate, so this
+     layout is intentionally empty (kept so setLayout/View.onUpdate still work). -->
 <layout id="WatchFace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
-    <label id="DateLabel" x="80%" y="center" font="Graphics.FONT_TINY" justification="Graphics.TEXT_JUSTIFY_CENTER" color="Graphics.COLOR_WHITE" />
 </layout>

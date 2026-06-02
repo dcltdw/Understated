@@ -16,10 +16,7 @@ class UnderstatedView extends WatchUi.View {
     private const BG_BLACK_GOLD = $.Rez.Drawables.id_bg_black_gold;
     private const BG_BLACK_SILVER = $.Rez.Drawables.id_bg_black_silver;
 
-    // var use_bitmap_boolean;
     var background_bitmap;
-    // var background_color;
-    // var numerals_color;
     var mySettings;
     var last_theme = -1;
     var date_color;
@@ -111,18 +108,16 @@ class UnderstatedView extends WatchUi.View {
 
         return true;
     }
+
     function initialize() {
-        //System.println("view - initialize");
         View.initialize();
-        //read settings
-        mySettings=new UnderstatedSettings();
+        mySettings = new UnderstatedSettings();
         var _now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
         check_for_day_advance(true, _now);
     }
 
     // Load your resources here
     function onLayout(dc as Dc) as Void {
-        //System.println("view - onLayout");
         setLayout(Rez.Layouts.WatchFace(dc));
     }
 
@@ -130,7 +125,6 @@ class UnderstatedView extends WatchUi.View {
     // the state of this View and prepare it to be shown. This includes
     // loading resources into memory.
     function onShow() as Void {
-        //System.println("view - onShow");
         mySettings.loadLocal();
         var _now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
         check_for_day_advance(true, _now);
@@ -139,7 +133,6 @@ class UnderstatedView extends WatchUi.View {
 
     // Update the view
     function onUpdate(dc as Dc) as Void {
-        // System.println("onUpdate: background_bitmap = " + background_bitmap);
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
 
@@ -157,13 +150,6 @@ class UnderstatedView extends WatchUi.View {
 
         drawDate(dc, _dateString);
         drawHands(dc, _hour, _minute);
-
-        // add date
-        // var dateLabel = View.findDrawableById("DateLabel") as Text;
-        // dateLabel.setText(getDate());
-
-        // debugging lines
-        // drawReferenceLines(dc);
     }
 
     // No onPartialUpdate: this is a minute-resolution face (no second hand),
@@ -173,47 +159,18 @@ class UnderstatedView extends WatchUi.View {
     // state of this View here. This includes freeing resources from
     // memory.
     function onHide() as Void {
-        // System.println("onHide");
         return;
     }
 
     // The user has just looked at their watch. Timers and animations may be started here.
     function onExitSleep() as Void {
-        // System.println("onExitSleep");
-        // check_for_day_advance(false);
         return;
     }
 
     // Terminate any active timers and prepare for slow updates.
     function onEnterSleep() as Void {
-        // System.println("onEnterSleep");
         return;
     }
-
-    // function drawBackground(dc as Dc) as Void {
-    //     var WIDTH = dc.getWidth();
-    //     var HEIGHT = dc.getHeight();
-
-    //     var ox = WIDTH / 2;
-    //     var oy = HEIGHT / 2;
-    //     var r_bg = ox; // radius of the background circle
-    //     var r_dial = oy; // radius of the roman numerals
-    //     if (oy > ox) {
-    //         r_bg = oy;
-    //         r_dial = ox;
-    //     }
-
-    //     // draw background
-    //     dc.setColor(date_color, background_color);
-    //     dc.fillCircle(ox, oy, r_bg);
-
-    //     // draw roman numerals
-    //     dc.drawRadialText(0, 0,
-    //         Graphics.FONT_SMALL, "I",
-    //         Graphics.TEXT_JUSTIFY_CENTER, 30, r_dial,
-    //         Graphics.RadialTextDirection.RADIAL_TEXT_DIRECTION_COUNTER_CLOCKWISE
-    //     );
-    // }
 
     function drawDate(dc as Dc, dateString as String) as Void {
         var WIDTH = dc.getWidth();
@@ -235,12 +192,9 @@ class UnderstatedView extends WatchUi.View {
           hour -= 12;
         }
         var adjusted_hour = hour + minute.toFloat() / 60;
-        // dc.drawText(WIDTH*0.25, HEIGHT*0.25, Graphics.FONT_SMALL, hour, Graphics.TEXT_JUSTIFY_CENTER);
-        // dc.drawText(WIDTH*0.50, HEIGHT*0.25, Graphics.FONT_SMALL, minute, Graphics.TEXT_JUSTIFY_CENTER);
-        // dc.drawText(WIDTH*0.75, HEIGHT*0.25, Graphics.FONT_SMALL, adjusted_hour, Graphics.TEXT_JUSTIFY_CENTER);
         var systemStats = System.getSystemStats();
         var batteryPercentage = systemStats.battery/100;
-        
+
         var hourTheta = (3 - adjusted_hour)* 30 * Math.PI/180;
         var minHandLength = WIDTH * 0.38;
         var maxHourHandLength = WIDTH * 0.23;
@@ -261,50 +215,16 @@ class UnderstatedView extends WatchUi.View {
         var unchargedHourHandEndX = hourHandStartX + Math.cos(hourTheta)*unchargedHourHandLength;
         var unchargedHourHandEndY = hourHandStartY - Math.sin(hourTheta)*unchargedHourHandLength;
 
-        // dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
-        // dc.setColor(Graphics.COLOR_GREEN, Graphics.COLOR_TRANSPARENT);
+        // Battery gauge: the "discharged" portion of the hour hand.
         dc.setColor(battery_discharged_color, Graphics.COLOR_TRANSPARENT);
-
         dc.drawLine(hourHandStartX, hourHandStartY, unchargedHourHandEndX, unchargedHourHandEndY);
 
         dc.setColor(hands_color, Graphics.COLOR_TRANSPARENT);
-        // dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
 
         dc.setPenWidth(2);
         dc.drawLine(minHandStartX, minHandStartY, minHandEndX, minHandEndY);
 
         dc.setPenWidth(3);
         dc.drawLine(unchargedHourHandEndX, unchargedHourHandEndY, maxHourHandEndX, maxHourHandEndY);
-
     }
-
-    // function drawReferenceLines(dc as Dc) as Void {
-    //     var WIDTH = dc.getWidth();
-    //     var HEIGHT = dc.getHeight();
-
-    //     dc.setPenWidth(1);
-
-    //     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-    //     dc.drawRectangle(0.2 * WIDTH, 0.1 * HEIGHT, 0.6 * WIDTH, 0.8 * HEIGHT);
-    //     dc.drawRectangle(0.15 * WIDTH, 0.15 * HEIGHT, 0.7 * WIDTH, 0.7 * HEIGHT);
-    //     dc.setColor(Graphics.COLOR_BLUE, Graphics.COLOR_TRANSPARENT);
-    //     dc.drawRectangle(0.1 * WIDTH, 0.2 * HEIGHT, 0.8 * WIDTH, 0.6 * HEIGHT);
-    //     dc.drawRectangle(0.05 * WIDTH, 0.3 * HEIGHT, 0.9 * WIDTH, 0.4 * HEIGHT);
-
-    //     dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-    //     dc.fillRectangle(0, 0.25 * HEIGHT, WIDTH, 1);
-    //     dc.fillRectangle(0, 0.5 * HEIGHT, WIDTH, 1);
-    //     dc.fillRectangle(0, 0.75 * HEIGHT, WIDTH, 1);
-    //     dc.fillRectangle(0.25 * WIDTH, 0, 1, HEIGHT);
-
-    //     dc.fillRectangle(0.1 * WIDTH, 0, 1, HEIGHT);
-    //     dc.fillRectangle(0.9 * WIDTH, 0, 1, HEIGHT);
-
-    //     dc.fillRectangle(0.5 * WIDTH, 0, 1, HEIGHT);
-    //     dc.fillRectangle(0.75 * WIDTH, 0, 1, HEIGHT);
-
-    //     dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
-    //     dc.fillRectangle(0.3333 * WIDTH, 0, 1, HEIGHT);
-    //     dc.fillRectangle(0.6666 * WIDTH, 0, 1, HEIGHT);
-    // }
 }
