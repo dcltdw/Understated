@@ -83,7 +83,11 @@ Power modes are tracked with `isLowPower` (set in `onEnterSleep`/`onExitSleep`)
 and `burnInProtect` (cached from `getDeviceSettings().requiresBurnInProtection`):
 
 - **High power** (awake): `onUpdate` runs ~1/sec, so the full dial draws plus a
-  second hand (`drawSecondHand`, theme accent color), gated by `!isLowPower`.
+  second hand (`drawSecondHand`, theme accent color), gated by `!isLowPower &&
+  mySettings.secondHand`. The second hand is a user setting (Storage key
+  `secondHand`); when unset it defaults by device class via `defaultSecondHand()`
+  — on at >=104KB watch-face memory (capable), off below (fr55 96KB) where the
+  1/sec redraw is sluggish.
 - **Low power, MIP** (`burnInProtect == false`): full dial, no second hand
   (`onUpdate` is ~1/min, so a second hand would freeze).
 - **Low power, AMOLED** (`burnInProtect == true`): `drawLowPower` renders a

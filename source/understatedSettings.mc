@@ -6,6 +6,7 @@ import Toybox.WatchUi;
 
 class UnderstatedSettings {
     var colorTheme = 0 as Number;
+    var secondHand = true;   // overwritten in loadLocal (device-class default)
     var hasProperties = false;
 
     function initialize() {
@@ -17,11 +18,27 @@ class UnderstatedSettings {
     function loadLocal() {
         colorTheme=Application.Storage.getValue("colorTheme");
         if(colorTheme==null) {colorTheme=0;}
+
+        var sh=Application.Storage.getValue("secondHand");
+        if(sh==null) {
+            secondHand=defaultSecondHand();   // not chosen yet: pick by device class
+        } else {
+            secondHand=sh;
+        }
+    }
+
+    // Default the second hand on for capable devices and off for constrained
+    // ones. The watch-face memory budget tracks device class: fr55 is 96KB
+    // (sluggish with a 1/sec redraw); current-gen MIP/AMOLED are 128KB. The
+    // threshold sits in the 96-112KB gap so runtime variance won't flip it.
+    function defaultSecondHand() {
+        return System.getSystemStats().totalMemory >= (104 * 1024);
     }
 
     //save changes to on device setting
     function saveLocal() {
         Application.Storage.setValue("colorTheme",colorTheme);
+        Application.Storage.setValue("secondHand",secondHand);
     }
 }
 
@@ -69,6 +86,7 @@ class UnderstatedSettingsMenu extends WatchUi.Menu2 {
     Menu2.setTitle("Settings");
 
     Menu2.addItem(new WatchUi.MenuItem("Color", currentColor, "colorTheme", null));
+    Menu2.addItem(new WatchUi.ToggleMenuItem("Second Hand", null, "secondHand", viewSettings.secondHand, null));
 
   }
 }
@@ -89,6 +107,9 @@ class UnderstatedSettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
       view.viewSettings.colorTheme=(view.viewSettings.colorTheme + 1)%8;
       item.setSubLabel(colorNames[view.viewSettings.colorTheme]);
       view.viewSettings.saveLocal();   // persist as soon as the color changes
+    } else if(id.equals("secondHand")) {
+      view.viewSettings.secondHand=(item as WatchUi.ToggleMenuItem).isEnabled();
+      view.viewSettings.saveLocal();
     }   	
 	}
     
