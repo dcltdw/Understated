@@ -47,52 +47,56 @@ class UnderstatedView extends WatchUi.View {
             return false;
         }
 
+        // fr55 has an 8-color palette: black, blue, green, cyan, red, magenta,
+        // yellow, white. Use palette-exact literals so colors don't quantize to
+        // a surprising neighbor (e.g. Graphics.COLOR_BLUE = 0x00AAFF rounds to
+        // cyan). No purple in the palette, so Purple uses magenta.
         switch (target_theme) {
             case 0: // Blue
-                background_color = Graphics.COLOR_BLUE;
-                numerals_color = Graphics.COLOR_LT_GRAY;
+                background_color = 0x0000FF;
+                numerals_color = 0xFFFFFF;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_ORANGE;
                 break;
             case 1: // Green
-                background_color = Graphics.COLOR_GREEN;
-                numerals_color = Graphics.COLOR_LT_GRAY;
+                background_color = 0x00FF00;
+                numerals_color = 0xFFFFFF;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_DK_BLUE;
                 break;
-            case 2: // Purple
-                background_color = Graphics.COLOR_PURPLE;
-                numerals_color = Graphics.COLOR_LT_GRAY;
+            case 2: // Purple (-> magenta on fr55's palette)
+                background_color = 0xFF00FF;
+                numerals_color = 0xFFFFFF;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_BLUE;
                 break;
             case 3: // Red
-                background_color = Graphics.COLOR_RED;
-                numerals_color = Graphics.COLOR_YELLOW;
+                background_color = 0xFF0000;
+                numerals_color = 0xFFFF00;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_GREEN;
                 break;
             case 4: // Yellow
-                background_color = Graphics.COLOR_YELLOW;
-                numerals_color = Graphics.COLOR_BLACK;
+                background_color = 0xFFFF00;
+                numerals_color = 0x000000;
                 date_color = Graphics.COLOR_BLACK;
                 hands_color = Graphics.COLOR_BLACK;
                 battery_discharged_color = Graphics.COLOR_RED;
                 break;
-            case 5: // Black/Gold
-                background_color = Graphics.COLOR_BLACK;
-                numerals_color = Graphics.COLOR_YELLOW;
+            case 5: // Black/Gold (gold -> yellow)
+                background_color = 0x000000;
+                numerals_color = 0xFFFF00;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_PINK;
                 break;
-            case 6: // Black/Silver
-                background_color = Graphics.COLOR_BLACK;
-                numerals_color = Graphics.COLOR_LT_GRAY;
+            case 6: // Black/Silver (silver -> white)
+                background_color = 0x000000;
+                numerals_color = 0xFFFFFF;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_ORANGE;
@@ -102,8 +106,8 @@ class UnderstatedView extends WatchUi.View {
                 mySettings.colorTheme = 0;
                 mySettings.saveLocal();
                 target_theme = 0;
-                background_color = Graphics.COLOR_BLUE;
-                numerals_color = Graphics.COLOR_LT_GRAY;
+                background_color = 0x0000FF;
+                numerals_color = 0xFFFFFF;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_ORANGE;
@@ -153,8 +157,12 @@ class UnderstatedView extends WatchUi.View {
         drawHands(dc, _hour, _minute);
     }
 
-    // No onPartialUpdate: this is a minute-resolution face (no second hand),
-    // so we don't request per-second wakeups. onUpdate handles all redraws.
+    // Some devices/firmware (incl. fr55) invoke onPartialUpdate during
+    // low-power updates; omitting it was implicated in a low-power crash.
+    // This face is minute-resolution, so there's nothing to draw between
+    // minutes -- the once-per-minute onUpdate does the full redraw.
+    function onPartialUpdate(dc as Dc) as Void {
+    }
 
     // Called when this View is removed from the screen. Save the
     // state of this View here. This includes freeing resources from
@@ -193,7 +201,7 @@ class UnderstatedView extends WatchUi.View {
             var angle = (i + 1) * 30 * Math.PI / 180; // numeral i+1 at its clock position
             var x = cx + r * Math.sin(angle);
             var y = cy - r * Math.cos(angle);
-            dc.drawText(x, y, Graphics.FONT_XTINY, NUMERALS[i],
+            dc.drawText(x, y, Graphics.FONT_TINY, NUMERALS[i],
                 Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
         }
     }
