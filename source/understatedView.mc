@@ -54,21 +54,21 @@ class UnderstatedView extends WatchUi.View {
         switch (target_theme) {
             case 0: // Blue
                 background_color = 0x0000FF;
-                numerals_color = 0xFFFFFF;
+                numerals_color = 0x00FFFF; // cyan numerals, white date
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_ORANGE;
                 break;
             case 1: // Green
                 background_color = 0x00FF00;
-                numerals_color = 0xFFFFFF;
+                numerals_color = 0xFFFF00; // yellow numerals (cyan unreadable on green), white date
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_DK_BLUE;
                 break;
             case 2: // Purple (-> magenta on fr55's palette)
                 background_color = 0xFF00FF;
-                numerals_color = 0xFFFFFF;
+                numerals_color = 0x00FFFF; // cyan numerals, white date
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_BLUE;
@@ -94,9 +94,9 @@ class UnderstatedView extends WatchUi.View {
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_PINK;
                 break;
-            case 6: // Black/Silver (silver -> white)
+            case 6: // Black/Silver (silver -> cyan numerals)
                 background_color = 0x000000;
-                numerals_color = 0xFFFFFF;
+                numerals_color = 0x00FFFF; // cyan numerals, white date (distinct from Black/Gold)
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_ORANGE;
