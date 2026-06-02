@@ -1,0 +1,8 @@
+# Connect IQ / Monkey C build output
+bin/
+
+# Exported app packages
+*.iq
+
+# macOS
+.DS_Store
