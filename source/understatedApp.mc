@@ -13,10 +13,8 @@ class UnderstatedApp extends Application.AppBase {
     }
 
     function onSettingsChanged() {
-        System.println("settings changed!");
         if(view!=null) {
             view.mySettings.loadLocal();
-            System.println("view colorTheme: " + view.mySettings.colorTheme);
             var _now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
             view.check_for_day_advance(true, _now);
             WatchUi.requestUpdate();
@@ -38,9 +36,8 @@ class UnderstatedApp extends Application.AppBase {
     }
     function getSettingsView() {
         var setView=new UnderstatedSettingsMenu();
-        // return [setView, new UnderstatedSettingsMenuDelegate(setView)]  as Array<Views or InputDelegates>;
         return [setView, new UnderstatedSettingsMenuDelegate(setView)];
-    }  
+    }
 
 
 }

@@ -10,21 +10,18 @@ class UnderstatedSettings {
 
     function initialize() {
         hasProperties=(Toybox.Application has :Properties);
-        // load();         //app settings
         loadLocal();    //on-device settings
     }
 
     // load local settings. from Application.Storage
     function loadLocal() {
         colorTheme=Application.Storage.getValue("colorTheme");
-        //System.println("settings - loadLocal: read colorTheme = " + colorTheme);
         if(colorTheme==null) {colorTheme=0;}
     }
 
     //save changes to on device setting
     function saveLocal() {
         Application.Storage.setValue("colorTheme",colorTheme);
-        //System.println("settings - Saving new colorTheme: " + colorTheme);
     }
 }
 
@@ -67,7 +64,6 @@ class UnderstatedSettingsMenu extends WatchUi.Menu2 {
         viewSettings.colorTheme = 0;
         viewSettings.saveLocal();
     }
-    // System.println("settings - init currentColor: " + currentColor);
 
     Menu2.initialize(null);
     Menu2.setTitle("Settings");
@@ -88,17 +84,14 @@ class UnderstatedSettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
   function onSelect(item) {
     var id=item.getId();
       var colorNames = ["Blue", "Green", "Purple", "Red", "Yellow", "Black/Gold", "Black/Silver", "Multi"];
-      //System.println("settings - index before: " + view.viewSettings.colorTheme);
 
     if(id.equals("colorTheme")) {
       view.viewSettings.colorTheme=(view.viewSettings.colorTheme + 1)%8;
-      //System.println("settings - index after: " + view.viewSettings.colorTheme);
       item.setSubLabel(colorNames[view.viewSettings.colorTheme]);
     }   	
 	}
     
   function onBack() {
-    //System.println("settings - onBack; index = " + view.viewSettings.colorTheme);
     view.viewSettings.saveLocal();
     WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
   }
