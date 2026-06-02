@@ -1,6 +1,8 @@
 import Toybox.Application;
 import Toybox.Lang;
 import Toybox.WatchUi;
+import Toybox.Time;
+import Toybox.Time.Gregorian;
 
 class UnderstatedApp extends Application.AppBase {
     var view=null;
@@ -14,8 +16,9 @@ class UnderstatedApp extends Application.AppBase {
         System.println("settings changed!");
         if(view!=null) {
             view.mySettings.loadLocal();
-            System.println("view colorTheme: " + view.colorTheme);
-            view.check_for_day_advance();
+            System.println("view colorTheme: " + view.mySettings.colorTheme);
+            var _now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
+            view.check_for_day_advance(true, _now);
             WatchUi.requestUpdate();
         }
     }
