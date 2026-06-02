@@ -30,9 +30,9 @@ suite; behavior beyond "it compiles" must be checked in the simulator/device.
 | File | Responsibility |
 |---|---|
 | `source/understatedApp.mc` | `AppBase` lifecycle; builds the view and settings menu; re-resolves the theme on `onSettingsChanged`. |
-| `source/understatedView.mc` | All rendering: theme resolution + background, date, hands, and the battery gauge. |
+| `source/understatedView.mc` | All rendering: theme resolution, the programmatic dial (`drawBackground`), date, hands, and the battery gauge. |
 | `source/understatedSettings.mc` | `UnderstatedSettings` (persists `colorTheme` to `Application.Storage`) plus the on-device `Menu2` and its delegate. |
-| `resources/` | Background PNGs, strings, drawables, and an intentionally-empty `WatchFace` layout (date/hands are drawn manually). |
+| `resources/` | Strings, the launcher icon, and an intentionally-empty `WatchFace` layout (everything is drawn manually; there are no background bitmaps). |
 
 ## Theme scheme
 
@@ -43,10 +43,16 @@ suite; behavior beyond "it compiles" must be checked in the simulator/device.
 - **7 ("Multi")** → rotate the color by day of week.
 
 `check_for_day_advance(force, _now)` resolves the setting to a concrete
-`target_theme` in 0–6 (a raw `7` never reaches the render switch), reloads the
-background only when the resolved theme changes (cached in `last_theme`), and
-returns `true` only on an actual change. Invalid values recover to Blue (0) and
-are persisted.
+`target_theme` in 0–6 (a raw `7` never reaches the render switch) and sets the
+theme's colors (`background_color`, `numerals_color`, hands/date/battery
+colors), only re-running the switch when the resolved theme changes (cached in
+`last_theme`). Invalid values recover to Blue (0) and are persisted.
+
+The dial itself is drawn programmatically in `drawBackground`: a full-screen
+fill plus 12 upright Roman numerals placed around the circle (no bitmaps), so
+it scales to any screen size or shape. Earlier versions used per-theme 208×208
+PNGs; those were removed because a resident full-screen bitmap is large for the
+fr55 watch-face memory budget (it caused intermittent out-of-memory crashes).
 
 | Theme | Color | Day (Multi) |
 |---|---|---|

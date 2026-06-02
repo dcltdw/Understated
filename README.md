@@ -1,7 +1,7 @@
 # Understated
 
 A minimal analog watch face for Garmin Connect IQ. The hour hand doubles as a
-battery gauge, over one of seven solid color backgrounds.
+battery gauge, over a Roman-numeral dial in one of seven solid colors.
 
 ## Features
 
@@ -14,8 +14,9 @@ battery gauge, over one of seven solid color backgrounds.
 
 ## Supported device
 
-Targets the Garmin **Forerunner 55 (`fr55`)**. The backgrounds are raster PNGs
-sized for that device; other devices are not currently configured.
+Targets the Garmin **Forerunner 55 (`fr55`)**. The dial (background fill plus
+Roman numerals) is drawn programmatically, so it scales to any screen size or
+shape — adding more devices is a manifest change, not new artwork.
 
 ## Build
 
