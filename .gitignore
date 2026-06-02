@@ -6,3 +6,7 @@ bin/
 
 # macOS
 .DS_Store
+
+# Local install/util scripts and editor backups
+install.sh
+*~
