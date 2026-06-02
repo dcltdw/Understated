@@ -34,6 +34,19 @@ SDK=~/Library/Application\ Support/Garmin/ConnectIQ/Sdks/<your-sdk>
 In VS Code, use the Monkey C extension's **Run App** / **Run Tests** launch
 configurations instead.
 
+## Install (sideload over USB)
+
+Connect the watch by USB; it mounts as a volume named `GARMIN`. Copy the built
+`.prg` into the device apps folder (on the Forerunner 55 this is uppercase
+`APPS`):
+
+```sh
+cp bin/Understated.prg /Volumes/GARMIN/GARMIN/APPS/
+```
+
+Eject the volume and unplug; the watch installs the app on disconnect. Then on
+the watch, long-press **UP** → **Watch Face** → select **Understated**.
+
 ## Settings
 
 Press the menu/select on the watch to open **Settings → Color** and cycle
