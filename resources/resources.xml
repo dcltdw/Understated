@@ -1,9 +1,3 @@
+<!-- Backgrounds are drawn programmatically in UnderstatedView; no bitmaps. -->
 <resources>
-  <bitmap id="id_bg_blue" filename="images/blue.png" />
-  <bitmap id="id_bg_green" filename="images/green.png" />
-  <bitmap id="id_bg_purple" filename="images/purple.png" />
-  <bitmap id="id_bg_red" filename="images/red.png" />
-  <bitmap id="id_bg_yellow" filename="images/yellow.png" />
-  <bitmap id="id_bg_black_gold" filename="images/black_gold.png" />
-  <bitmap id="id_bg_black_silver" filename="images/black_silver.png" />
 </resources>

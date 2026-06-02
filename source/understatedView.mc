@@ -8,25 +8,21 @@ import Toybox.Math;
 
 
 class UnderstatedView extends WatchUi.View {
-    private const BG_BLUE = $.Rez.Drawables.id_bg_blue;
-    private const BG_GREEN = $.Rez.Drawables.id_bg_green;
-    private const BG_PURPLE = $.Rez.Drawables.id_bg_purple;
-    private const BG_RED = $.Rez.Drawables.id_bg_red;
-    private const BG_YELLOW = $.Rez.Drawables.id_bg_yellow;
-    private const BG_BLACK_GOLD = $.Rez.Drawables.id_bg_black_gold;
-    private const BG_BLACK_SILVER = $.Rez.Drawables.id_bg_black_silver;
+    // Upright Roman numerals, index i -> the (i+1) o'clock mark.
+    private const NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
 
-    var background_bitmap;
     var mySettings;
     var last_theme = -1;
+    var background_color;
+    var numerals_color;
     var date_color;
     var hands_color;
     var battery_discharged_color;
 
-    // Resolves the active theme from the user's setting and loads the matching
-    // background, but only when the theme actually changes. colorTheme 0-6 pins
+    // Resolves the active theme from the user's setting and sets the matching
+    // colors, but only when the theme actually changes. colorTheme 0-6 pins
     // a fixed color; colorTheme 7 ("Multi") rotates the color by day of week.
-    // Returns true when the rendered theme changed (caller should clear + redraw).
+    // Returns true when the rendered theme changed.
     function check_for_day_advance(force as Boolean, _now as $.Toybox.Time.Gregorian.Info) as Boolean {
         var target_theme;
         if (mySettings.colorTheme == 7) {
@@ -51,45 +47,56 @@ class UnderstatedView extends WatchUi.View {
             return false;
         }
 
+        // fr55 has an 8-color palette: black, blue, green, cyan, red, magenta,
+        // yellow, white. Use palette-exact literals so colors don't quantize to
+        // a surprising neighbor (e.g. Graphics.COLOR_BLUE = 0x00AAFF rounds to
+        // cyan). No purple in the palette, so Purple uses magenta.
         switch (target_theme) {
-            case 0:
-                background_bitmap = WatchUi.loadResource(BG_BLUE) as BitmapResource;
+            case 0: // Blue
+                background_color = 0x0000FF;
+                numerals_color = 0x00FFFF; // cyan numerals, white date
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_ORANGE;
                 break;
-            case 1:
-                background_bitmap = WatchUi.loadResource(BG_GREEN) as BitmapResource;
+            case 1: // Green
+                background_color = 0x00FF00;
+                numerals_color = 0xFFFF00; // yellow numerals (cyan unreadable on green), white date
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_DK_BLUE;
                 break;
-            case 2:
-                background_bitmap = WatchUi.loadResource(BG_PURPLE) as BitmapResource;
+            case 2: // Purple (-> magenta on fr55's palette)
+                background_color = 0xFF00FF;
+                numerals_color = 0x00FFFF; // cyan numerals, white date
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_BLUE;
                 break;
-            case 3:
-                background_bitmap = WatchUi.loadResource(BG_RED) as BitmapResource;
+            case 3: // Red
+                background_color = 0xFF0000;
+                numerals_color = 0xFFFF00;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_GREEN;
                 break;
-            case 4:
-                background_bitmap = WatchUi.loadResource(BG_YELLOW) as BitmapResource;
+            case 4: // Yellow
+                background_color = 0xFFFF00;
+                numerals_color = 0x000000;
                 date_color = Graphics.COLOR_BLACK;
                 hands_color = Graphics.COLOR_BLACK;
                 battery_discharged_color = Graphics.COLOR_RED;
                 break;
-            case 5:
-                background_bitmap = WatchUi.loadResource(BG_BLACK_GOLD) as BitmapResource;
+            case 5: // Black/Gold (gold -> yellow)
+                background_color = 0x000000;
+                numerals_color = 0xFFFF00;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_PINK;
                 break;
-            case 6:
-                background_bitmap = WatchUi.loadResource(BG_BLACK_SILVER) as BitmapResource;
+            case 6: // Black/Silver (silver -> cyan numerals)
+                background_color = 0x000000;
+                numerals_color = 0x00FFFF; // cyan numerals, white date (distinct from Black/Gold)
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_ORANGE;
@@ -99,7 +106,8 @@ class UnderstatedView extends WatchUi.View {
                 mySettings.colorTheme = 0;
                 mySettings.saveLocal();
                 target_theme = 0;
-                background_bitmap = WatchUi.loadResource(BG_BLUE) as BitmapResource;
+                background_color = 0x0000FF;
+                numerals_color = 0xFFFFFF;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_ORANGE;
@@ -137,12 +145,9 @@ class UnderstatedView extends WatchUi.View {
         View.onUpdate(dc);
 
         var _now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
-        if (check_for_day_advance(false, _now)) {
-            dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
-            dc.clear();
-        }
+        check_for_day_advance(false, _now);
 
-        dc.drawBitmap(0, 0, background_bitmap);
+        drawBackground(dc);
 
         var _hour = _now.hour;
         var _minute = _now.min;
@@ -152,8 +157,12 @@ class UnderstatedView extends WatchUi.View {
         drawHands(dc, _hour, _minute);
     }
 
-    // No onPartialUpdate: this is a minute-resolution face (no second hand),
-    // so we don't request per-second wakeups. onUpdate handles all redraws.
+    // Some devices/firmware (incl. fr55) invoke onPartialUpdate during
+    // low-power updates; omitting it was implicated in a low-power crash.
+    // This face is minute-resolution, so there's nothing to draw between
+    // minutes -- the once-per-minute onUpdate does the full redraw.
+    function onPartialUpdate(dc as Dc) as Void {
+    }
 
     // Called when this View is removed from the screen. Save the
     // state of this View here. This includes freeing resources from
@@ -170,6 +179,31 @@ class UnderstatedView extends WatchUi.View {
     // Terminate any active timers and prepare for slow updates.
     function onEnterSleep() as Void {
         return;
+    }
+
+    // Draws the dial programmatically: a solid fill plus 12 upright Roman
+    // numerals. No bitmaps, so it scales to any screen size or shape.
+    function drawBackground(dc as Dc) as Void {
+        var width = dc.getWidth();
+        var height = dc.getHeight();
+
+        // Fill the whole face with the theme background color.
+        dc.setColor(numerals_color, background_color);
+        dc.clear();
+
+        var cx = width / 2;
+        var cy = height / 2;
+        var size = (width < height) ? width : height;
+        var r = size * 0.40;
+
+        dc.setColor(numerals_color, Graphics.COLOR_TRANSPARENT);
+        for (var i = 0; i < 12; i += 1) {
+            var angle = (i + 1) * 30 * Math.PI / 180; // numeral i+1 at its clock position
+            var x = cx + r * Math.sin(angle);
+            var y = cy - r * Math.cos(angle);
+            dc.drawText(x, y, Graphics.FONT_TINY, NUMERALS[i],
+                Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        }
     }
 
     function drawDate(dc as Dc, dateString as String) as Void {
