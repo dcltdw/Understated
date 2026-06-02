@@ -88,12 +88,13 @@ class UnderstatedSettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
     if(id.equals("colorTheme")) {
       view.viewSettings.colorTheme=(view.viewSettings.colorTheme + 1)%8;
       item.setSubLabel(colorNames[view.viewSettings.colorTheme]);
+      view.viewSettings.saveLocal();   // persist as soon as the color changes
     }   	
 	}
     
-  function onBack() {
-    view.viewSettings.saveLocal();
-    WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
-  }
+  // No onBack override: this is a system-provided settings view (from
+  // getSettingsView), so the framework dismisses it on Back. Calling
+  // WatchUi.popView here double-popped and broke the Customize/Apply pager.
+  // The color is persisted in onSelect instead.
 
 }	
