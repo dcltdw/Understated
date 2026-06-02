@@ -5,8 +5,10 @@ battery gauge, over a Roman-numeral dial in one of seven solid colors.
 
 ## Features
 
-- **Analog time** — hour and minute hands, plus a second hand while the watch
-  is awake (hidden in low power to save battery / avoid AMOLED burn-in).
+- **Analog time** — hour and minute hands, plus an optional second hand while
+  the watch is awake (hidden in low power to save battery / avoid AMOLED
+  burn-in). The second hand is a setting — on by default on capable watches,
+  off on constrained ones (e.g. fr55), where the 1/sec redraw is sluggish.
 - **Battery-as-hour-hand** — the "discharged" portion of the hour hand is drawn
   in a separate accent color, so the hand fills back up as the watch charges.
 - **Date** — day-of-month, drawn to the right of center.
