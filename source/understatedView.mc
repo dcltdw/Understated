@@ -166,10 +166,9 @@ class UnderstatedView extends WatchUi.View {
         // drawReferenceLines(dc);
     }
 
-    function onPartialUpdate(dc as Dc) as Void {
-        // System.println("onPartialUpdate");
-        onUpdate(dc);
-    }
+    // No onPartialUpdate: this is a minute-resolution face (no second hand),
+    // so we don't request per-second wakeups. onUpdate handles all redraws.
+
     // Called when this View is removed from the screen. Save the
     // state of this View here. This includes freeing resources from
     // memory.
