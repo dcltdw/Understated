@@ -112,7 +112,9 @@ record — edit that doc, not this replica, when a rule changes). Adopted here:
 - **Rule 4** — PR bodies include `Files changed`, `Work breakdown`,
   `Test expectations` (only when failures are expected), and
   `Operational impact` (rebuild/reinstall/storage-migration notes for a watch
-  face).
+  face). In `Files changed`, annotate each entry's status — `(new)` /
+  `(deleted)` / (modified) — so additions and deletions are visible at a
+  glance, not just modifications.
 - **Rule 5** — stamp commits with the current AI model in `Co-Authored-By:`.
 - **Rule 6** — scan each diff for secrets before pushing.
 - **Rule 8** — this file is a thin replica pointing back to the master doc.
