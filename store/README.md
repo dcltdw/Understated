@@ -2,6 +2,12 @@
 
 Assets for the Connect IQ store listing.
 
+## Hero image (`hero.png`)
+
+The store banner — **1440×720** (the size the store requires for the hero
+image). Dark banner with the app name and three themes (blue/purple/red) at
+10:10.
+
 ## Screenshots
 
 Two sets, one image per color theme (`1-blue` … `7-black_silver`):
@@ -10,10 +16,10 @@ Two sets, one image per color theme (`1-blue` … `7-black_silver`):
 
 Real Connect IQ simulator renders on the **Venu 3** (round AMOLED) with the
 **actual Garmin font**, captured via window-region `screencapture` and cropped
-to the watch face (~440×440). They show a live time, battery ~65% (the
-discharged part of the hour hand is the accent color), the date, and the second
-hand (the capable-device default; fr55 and other constrained devices default it
-off).
+to the watch face, normalized to **454×454** (Venu 3 native). They show time
+**10:10**, battery ~65% (the discharged part of the hour hand is the accent
+color), the date, and the second hand (the capable-device default; fr55 and
+other constrained devices default it off).
 
 ### `screenshots/*.png` — vector renders (reference / fallback)
 
