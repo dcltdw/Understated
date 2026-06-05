@@ -2,33 +2,40 @@
 
 Assets for the Connect IQ store listing.
 
-## Screenshots (`screenshots/`)
+## Hero image (`hero.png`)
 
-One image per color theme (`1-blue` … `7-black_silver`), 454×454 PNG
-(AMOLED-class resolution), plus the `.svg` source for each.
+The store banner — **1440×720** (the size the store requires for the hero
+image). Dark banner with the app name and three themes (blue/purple/red) at
+10:10.
 
-They show: time 10:10, battery ~65% (the discharged part of the hour hand is
-the accent color), date "12", and the second hand (the capable-device default;
-the fr55 and other constrained devices default it off).
+## Screenshots
 
-### ⚠️ These are faithful *renders*, not simulator captures
+Two sets, one image per color theme (`1-blue` … `7-black_silver`):
 
-Generated with `gen_screens.py` → `rsvg-convert`, using the exact geometry and
-colors from `source/understatedView.mc`. Two caveats vs. a real device:
+### `screenshots/sim/` — true simulator captures (use these for the store)
 
-- The numeral font is **Helvetica** (a stand-in for Garmin's `FONT_TINY`
-  sans-serif) — very close, but not pixel-identical.
-- Colors are the AMOLED/full-color values; on the fr55's 8-color MIP panel the
-  thin accent (battery/second hand) quantizes slightly.
+Real Connect IQ simulator renders on the **Venu 3** (round AMOLED) with the
+**actual Garmin font**, captured via window-region `screencapture` and cropped
+to the watch face, normalized to **454×454** (Venu 3 native). They show time
+**10:10**, battery ~65% (the discharged part of the hour hand is the accent
+color), the date, and the second hand (the capable-device default; fr55 and
+other constrained devices default it off).
 
-They were rendered instead of captured because the simulator screenshot path
-needs macOS Screen Recording permission, which a headless tool can't grant.
+### `screenshots/*.png` — vector renders (reference / fallback)
 
-**To produce pixel-true captures** (recommended before final upload): run the
-app in the Connect IQ simulator and use **File → Save Screen Shot** (saves the
-device screen at native resolution, no Screen Recording permission needed).
-Change the color in **Settings → Color** for each theme. Pick a device per
-display class (e.g. `venu3` AMOLED, `fr965`, and `fr55` MIP).
+Generated from the exact dial geometry/colors via `gen_screens.py` →
+`rsvg-convert` (454×454, `.svg` source alongside). The numeral font is
+Helvetica (a stand-in for `FONT_TINY`); colors are the AMOLED/full-color
+values. Kept as a resolution-independent reference.
+
+### Capturing more sim screenshots
+
+Load the app in the simulator and either use **File → Save Screen Shot** (clean
+native PNG), or capture the sim window region with `screencapture`. Change the
+color via **Settings → Color**, or force `colorTheme` in
+`UnderstatedSettings.loadLocal` for a scripted batch. The sim must be on an
+awake, capturable display (Screen Recording permission required for
+`screencapture`).
 
 ### Regenerate the renders
 
