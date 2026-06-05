@@ -2,6 +2,11 @@
 
 Assets for the Connect IQ store listing.
 
+## Listing text
+
+- `description.txt` — the store description (~730 chars; the store cap is 4000).
+- `changelog.txt` — release notes / "What's New".
+
 ## Hero image (`hero.png`)
 
 The store banner — **1440×720** (the size the store requires for the hero

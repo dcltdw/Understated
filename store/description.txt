@@ -1,0 +1,11 @@
+Understated is a minimal analog watch face where the hour hand doubles as your battery gauge.
+
+A clean Roman-numeral dial with hour, minute, and an optional second hand, plus the date — and nothing you don't need. As the battery drains, the "spent" portion of the hour hand fills in an accent color, so you can read your charge at a glance, with no numbers or icons.
+
+• Battery-as-hour-hand — a subtle, built-in battery gauge
+• 8 colors: Blue, Green, Purple, Red, Yellow, Black/Gold, Black/Silver, and Multi (a different color each day)
+• Optional second hand while the watch is awake
+• Crisp on every display — MIP and AMOLED, round and rectangular
+• AMOLED always-on, burn-in safe
+
+Set the color and second hand in the watch face settings.
