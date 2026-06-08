@@ -285,15 +285,16 @@ class UnderstatedView extends WatchUi.View {
         var px = [cx, cx + r, cx, cx - r];
         var py = [cy - r, cy, cy + r, cy];
 
-        // Inner edges of the 3 and 9 o'clock numerals (numerals sit at 0.40).
-        // A wide field at those slots is pushed inward (toward center) so it
-        // never crowds the numeral; narrow fields stay centered on px and the
-        // clamp does nothing, so the default look is unchanged. The gap roughly
-        // matches the natural breathing room a centered single value has.
+        // Inner edges of the 3 and 9 o'clock numerals (numerals sit at 0.40),
+        // less a small gap. The 3 o'clock slot is right-justified to this edge
+        // and the 9 o'clock slot left-justified to its edge, so both hug their
+        // numeral and any extra width grows inward (toward center) rather than
+        // crowding the numeral. The gap matches a centered value's breathing room.
         var numR = size * 0.40;
         var gap = size * 0.055;
         var rightLimit = (cx + numR) - dc.getTextWidthInPixels(NUMERALS[2], Graphics.FONT_TINY) / 2.0 - gap;
         var leftLimit  = (cx - numR) + dc.getTextWidthInPixels(NUMERALS[8], Graphics.FONT_TINY) / 2.0 + gap;
+        var tinyH = dc.getFontHeight(Graphics.FONT_TINY);
 
         for (var i = 0; i < 4; i += 1) {
             var show = mySettings.slotShow[i];
@@ -304,7 +305,8 @@ class UnderstatedView extends WatchUi.View {
             var font = resolveFont(mySettings.slotSize[i]);
             var fmt = mySettings.slotFmt[i];
 
-            var ih = dc.getFontHeight(font) * 0.8;
+            var fh = dc.getFontHeight(font);
+            var ih = fh * 0.8;
             var igap = ih * 0.35;
 
             // Resolve the drawn text and the field's total pixel width.
@@ -320,21 +322,27 @@ class UnderstatedView extends WatchUi.View {
                 w = dc.getTextWidthInPixels(text, font);
             }
 
-            // Center x for the slot, clamped inward at 3/9 o'clock only.
-            var fx = px[i];
-            if (i == 1 and fx + w / 2.0 > rightLimit) { fx = rightLimit - w / 2.0; }
-            if (i == 3 and fx - w / 2.0 < leftLimit)  { fx = leftLimit + w / 2.0; }
+            // Left edge of the field by slot: 12/6 centered, 3 right-justified
+            // (hugs III), 9 left-justified (hugs IX).
+            var startX;
+            if (i == 1)      { startX = rightLimit - w; }
+            else if (i == 3) { startX = leftLimit; }
+            else             { startX = px[i] - w / 2.0; }
+
+            // VCENTER aligns the font cell, so a font taller than the FONT_TINY
+            // numerals leaves its glyphs sitting high; nudge down to put the
+            // field's glyphs on the numeral's centerline (zero for FONT_TINY).
+            var oy = py[i] + (fh - tinyH) / 2.0;
 
             if (fmt == 2) {
-                var startX = fx - w / 2.0;
-                drawIcon(dc, show, startX + ih / 2.0, py[i], ih, color);
+                drawIcon(dc, show, startX + ih / 2.0, oy, ih, color);
                 dc.setColor(color, Graphics.COLOR_TRANSPARENT);
-                dc.drawText(startX + ih + igap, py[i], font, val,
+                dc.drawText(startX + ih + igap, oy, font, val,
                     Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
             } else {
                 dc.setColor(color, Graphics.COLOR_TRANSPARENT);
-                dc.drawText(fx, py[i], font, text,
-                    Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+                dc.drawText(startX, oy, font, text,
+                    Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
             }
         }
     }
