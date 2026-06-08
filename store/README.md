@@ -4,7 +4,7 @@ Assets for the Connect IQ store listing.
 
 ## Listing text
 
-- `description.txt` — the store description (~730 chars; the store cap is 4000).
+- `description.txt` — the store description (~1330 chars; the store cap is 4000).
 - `changelog.txt` — release notes / "What's New".
 
 ## Hero image (`hero.png`)
