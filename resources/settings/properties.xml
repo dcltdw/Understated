@@ -1,0 +1,38 @@
+<properties>
+    <!-- General -->
+    <property id="colorTheme" type="number">0</property>
+    <property id="secondHand" type="number">0</property>   <!-- 0 Auto, 1 On, 2 Off -->
+
+    <!-- Data field slots. Show: 0 Off, 1 Date, 2 BodyBattery, 3 HeartRate,
+         4 Steps, 5 Calories, 6 Distance, 7 Floors, 8 ActiveMin, 9 MoveBar,
+         10 Stress, 11 PulseOx, 12 Elevation, 13 Pressure, 14 Temperature,
+         15 DeviceBattery, 16 Notifications, 17 WeatherTemp, 18 WeatherCond.
+         Fmt: 0 Value, 1 Label+value, 2 Icon+value.
+         Col: 0 White,1 LtGray,2 Red,3 Orange,4 Yellow,5 Green,6 Cyan,7 Blue,
+              8 Magenta,9 Pink,10 Black,11 Accent.
+         Size: 0 Tiny,1 Small,2 Medium,3 Large. -->
+
+    <!-- 12 o'clock (top) - default Off -->
+    <property id="s12Show" type="number">0</property>
+    <property id="s12Fmt"  type="number">0</property>
+    <property id="s12Col"  type="number">0</property>
+    <property id="s12Size" type="number">1</property>
+
+    <!-- 3 o'clock (right) - default Date -->
+    <property id="s3Show" type="number">1</property>
+    <property id="s3Fmt"  type="number">0</property>
+    <property id="s3Col"  type="number">0</property>
+    <property id="s3Size" type="number">1</property>
+
+    <!-- 6 o'clock (bottom) - default Off -->
+    <property id="s6Show" type="number">0</property>
+    <property id="s6Fmt"  type="number">0</property>
+    <property id="s6Col"  type="number">0</property>
+    <property id="s6Size" type="number">1</property>
+
+    <!-- 9 o'clock (left) - default Off -->
+    <property id="s9Show" type="number">0</property>
+    <property id="s9Fmt"  type="number">0</property>
+    <property id="s9Col"  type="number">0</property>
+    <property id="s9Size" type="number">1</property>
+</properties>

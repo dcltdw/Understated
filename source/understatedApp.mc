@@ -34,12 +34,8 @@ class UnderstatedApp extends Application.AppBase {
         view = new UnderstatedView();
         return [ view ];
     }
-    function getSettingsView() {
-        var setView=new UnderstatedSettingsMenu();
-        return [setView, new UnderstatedSettingsMenuDelegate(setView)];
-    }
-
-
+    // No getSettingsView: settings are configured from the phone (Garmin
+    // Connect app) via the Connect IQ app-settings form, not on the device.
 }
 
 function getApp() as UnderstatedApp {
