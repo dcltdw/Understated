@@ -280,9 +280,21 @@ class UnderstatedView extends WatchUi.View {
         var height = dc.getHeight();
         var cx = width / 2;
         var cy = height / 2;
-        var r = (width < height ? width : height) * 0.30;
+        var size = (width < height) ? width : height;
+        var r = size * 0.30;
         var px = [cx, cx + r, cx, cx - r];
         var py = [cy - r, cy, cy + r, cy];
+
+        // Inner edges of the 3 and 9 o'clock numerals (numerals sit at 0.40).
+        // A wide field at those slots is pushed inward (toward center) so it
+        // never crowds the numeral; narrow fields stay centered on px and the
+        // clamp does nothing, so the default look is unchanged. The gap roughly
+        // matches the natural breathing room a centered single value has.
+        var numR = size * 0.40;
+        var gap = size * 0.055;
+        var rightLimit = (cx + numR) - dc.getTextWidthInPixels(NUMERALS[2], Graphics.FONT_TINY) / 2.0 - gap;
+        var leftLimit  = (cx - numR) + dc.getTextWidthInPixels(NUMERALS[8], Graphics.FONT_TINY) / 2.0 + gap;
+
         for (var i = 0; i < 4; i += 1) {
             var show = mySettings.slotShow[i];
             if (show == 0) { continue; }
@@ -292,24 +304,36 @@ class UnderstatedView extends WatchUi.View {
             var font = resolveFont(mySettings.slotSize[i]);
             var fmt = mySettings.slotFmt[i];
 
+            var ih = dc.getFontHeight(font) * 0.8;
+            var igap = ih * 0.35;
+
+            // Resolve the drawn text and the field's total pixel width.
+            var text = val;
+            var w;
             if (fmt == 2) {                      // Icon + value
-                var fh = dc.getFontHeight(font);
-                var ih = fh * 0.8;
-                var gap = ih * 0.35;
-                var tw = dc.getTextWidthInPixels(val, font);
-                var startX = px[i] - (ih + gap + tw) / 2.0;
-                drawIcon(dc, show, startX + ih / 2.0, py[i], ih, color);
-                dc.setColor(color, Graphics.COLOR_TRANSPARENT);
-                dc.drawText(startX + ih + gap, py[i], font, val,
-                    Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+                w = ih + igap + dc.getTextWidthInPixels(val, font);
             } else {
-                var text = val;
                 if (fmt == 1) {                  // Label + value
                     var lbl = getLabelString(show);
                     if (lbl != null) { text = lbl + " " + val; }
                 }
+                w = dc.getTextWidthInPixels(text, font);
+            }
+
+            // Center x for the slot, clamped inward at 3/9 o'clock only.
+            var fx = px[i];
+            if (i == 1 and fx + w / 2.0 > rightLimit) { fx = rightLimit - w / 2.0; }
+            if (i == 3 and fx - w / 2.0 < leftLimit)  { fx = leftLimit + w / 2.0; }
+
+            if (fmt == 2) {
+                var startX = fx - w / 2.0;
+                drawIcon(dc, show, startX + ih / 2.0, py[i], ih, color);
                 dc.setColor(color, Graphics.COLOR_TRANSPARENT);
-                dc.drawText(px[i], py[i], font, text,
+                dc.drawText(startX + ih + igap, py[i], font, val,
+                    Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+            } else {
+                dc.setColor(color, Graphics.COLOR_TRANSPARENT);
+                dc.drawText(fx, py[i], font, text,
                     Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
             }
         }
