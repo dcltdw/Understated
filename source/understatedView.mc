@@ -5,6 +5,10 @@ import Toybox.WatchUi;
 import Toybox.Time;
 import Toybox.Time.Gregorian;
 import Toybox.Math;
+import Toybox.ActivityMonitor;
+import Toybox.Activity;
+import Toybox.SensorHistory;
+import Toybox.Weather;
 
 
 class UnderstatedView extends WatchUi.View {
@@ -156,13 +160,8 @@ class UnderstatedView extends WatchUi.View {
         }
 
         drawBackground(dc);
-
-        var _hour = _now.hour;
-        var _minute = _now.min;
-        var _dateString = Lang.format("$1$", [_now.day]);
-
-        drawDate(dc, _dateString);
-        drawHands(dc, _hour, _minute);
+        drawDataFields(dc, _now);
+        drawHands(dc, _now.hour, _now.min);
 
         // Second hand only while awake. In high power onUpdate runs ~1/sec so it
         // ticks; in low power onUpdate is ~1/min (it would freeze) and AMOLED uses
@@ -273,12 +272,185 @@ class UnderstatedView extends WatchUi.View {
             width / 2 + Math.cos(theta) * len, height / 2 - Math.sin(theta) * len);
     }
 
-    function drawDate(dc as Dc, dateString as String) as Void {
-        var WIDTH = dc.getWidth();
-        var HEIGHT = dc.getHeight();
+    // Data fields at 12/3/6/9, inboard of the numerals and vertically centered
+    // on the same radial axis, so a value lines up with its numeral. Content,
+    // format, color, and size come from settings. Slot order: 12, 3, 6, 9.
+    function drawDataFields(dc as Dc, _now as $.Toybox.Time.Gregorian.Info) as Void {
+        var width = dc.getWidth();
+        var height = dc.getHeight();
+        var cx = width / 2;
+        var cy = height / 2;
+        var r = (width < height ? width : height) * 0.30;
+        var px = [cx, cx + r, cx, cx - r];
+        var py = [cy - r, cy, cy + r, cy];
+        for (var i = 0; i < 4; i += 1) {
+            var show = mySettings.slotShow[i];
+            if (show == 0) { continue; }
+            var val = getValueString(show, _now);
+            if (val == null) { val = "--"; }
+            var text = val;
+            if (mySettings.slotFmt[i] == 1) {   // Label + value
+                var lbl = getLabelString(show);
+                if (lbl != null) { text = lbl + " " + val; }
+            }
+            // Format 2 (Icon + value) is added in a later commit; for now it
+            // falls through to value-only.
+            dc.setColor(resolveColor(mySettings.slotCol[i]), Graphics.COLOR_TRANSPARENT);
+            dc.drawText(px[i], py[i], resolveFont(mySettings.slotSize[i]), text,
+                Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        }
+    }
 
-        dc.setColor(date_color, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(WIDTH * 0.81, HEIGHT * 0.43, Graphics.FONT_SMALL, dateString, Graphics.TEXT_JUSTIFY_CENTER);
+    function resolveColor(id as Number) as Number {
+        switch (id) {
+            case 0:  return 0xFFFFFF;  // White
+            case 1:  return 0xAAAAAA;  // Light gray
+            case 2:  return 0xFF0000;  // Red
+            case 3:  return 0xFF5500;  // Orange
+            case 4:  return 0xFFFF00;  // Yellow
+            case 5:  return 0x00FF00;  // Green
+            case 6:  return 0x00FFFF;  // Cyan
+            case 7:  return 0x0000FF;  // Blue
+            case 8:  return 0xFF00FF;  // Magenta
+            case 9:  return 0xFFAAFF;  // Pink
+            case 10: return 0x000000;  // Black
+            case 11: return battery_discharged_color;  // Accent (theme)
+            default: return 0xFFFFFF;
+        }
+    }
+
+    function resolveFont(id as Number) {
+        switch (id) {
+            case 0:  return Graphics.FONT_XTINY;   // Tiny
+            case 2:  return Graphics.FONT_SMALL;   // Medium
+            case 3:  return Graphics.FONT_MEDIUM;  // Large
+            default: return Graphics.FONT_TINY;    // Small
+        }
+    }
+
+    // Newest sample value from a SensorHistory iterator, or null.
+    function newestData(iter) {
+        if (iter == null) { return null; }
+        var s = iter.next();
+        return (s != null) ? s.data : null;
+    }
+
+    function fmtInt(d) {
+        return (d != null) ? d.format("%d") : null;
+    }
+
+    function tempStr(c, ds) {
+        var t = c;
+        if (ds.temperatureUnits == System.UNIT_STATUTE) { t = c * 9.0 / 5.0 + 32.0; }
+        return t.format("%d") + "°";
+    }
+
+    function getValueString(show as Number, _now as $.Toybox.Time.Gregorian.Info) {
+        var ds = System.getDeviceSettings();
+        if (show == 1) { return _now.day.toString(); }                          // Date
+        if (show == 3) {                                                         // Heart rate
+            var ai = Activity.getActivityInfo();
+            return (ai != null && ai.currentHeartRate != null) ? ai.currentHeartRate.toString() : null;
+        }
+        if (show == 15) { return System.getSystemStats().battery.format("%d"); } // Device battery
+        if (show == 16) { return ds.notificationCount.toString(); }             // Notifications
+
+        if (Toybox has :SensorHistory) {
+            if (show == 2 && SensorHistory has :getBodyBatteryHistory) {
+                return fmtInt(newestData(SensorHistory.getBodyBatteryHistory({:period=>1, :order=>SensorHistory.ORDER_NEWEST_FIRST})));
+            }
+            if (show == 10 && SensorHistory has :getStressHistory) {
+                return fmtInt(newestData(SensorHistory.getStressHistory({:period=>1, :order=>SensorHistory.ORDER_NEWEST_FIRST})));
+            }
+            if (show == 11 && SensorHistory has :getOxygenSaturationHistory) {
+                return fmtInt(newestData(SensorHistory.getOxygenSaturationHistory({:period=>1, :order=>SensorHistory.ORDER_NEWEST_FIRST})));
+            }
+            if (show == 12 && SensorHistory has :getElevationHistory) {
+                return fmtInt(newestData(SensorHistory.getElevationHistory({:period=>1, :order=>SensorHistory.ORDER_NEWEST_FIRST})));
+            }
+            if (show == 13 && SensorHistory has :getPressureHistory) {
+                var p = newestData(SensorHistory.getPressureHistory({:period=>1, :order=>SensorHistory.ORDER_NEWEST_FIRST}));
+                return (p != null) ? (p / 100.0).format("%d") : null;            // Pa -> hPa
+            }
+            if (show == 14 && SensorHistory has :getTemperatureHistory) {
+                var t = newestData(SensorHistory.getTemperatureHistory({:period=>1, :order=>SensorHistory.ORDER_NEWEST_FIRST}));
+                return (t != null) ? tempStr(t, ds) : null;
+            }
+        }
+
+        if (show >= 4 && show <= 9) {                                            // ActivityMonitor
+            var am = ActivityMonitor.getInfo();
+            if (show == 4) { return (am.steps != null) ? am.steps.toString() : null; }
+            if (show == 5) { return (am.calories != null) ? am.calories.toString() : null; }
+            if (show == 6) {
+                if (am.distance == null) { return null; }
+                var km = am.distance / 100000.0;
+                return (ds.distanceUnits == System.UNIT_STATUTE) ? (km * 0.621371).format("%.1f") : km.format("%.1f");
+            }
+            if (show == 7) { return (am.floorsClimbed != null) ? am.floorsClimbed.toString() : null; }
+            if (show == 8) {
+                if (am has :activeMinutesDay && am.activeMinutesDay != null) { return am.activeMinutesDay.total.toString(); }
+                return null;
+            }
+            if (show == 9) { return (am.moveBarLevel != null) ? am.moveBarLevel.toString() : null; }
+        }
+
+        if ((show == 17 || show == 18) && (Toybox has :Weather)) {               // Weather
+            var cc = Weather.getCurrentConditions();
+            if (cc != null) {
+                if (show == 17 && cc.temperature != null) { return tempStr(cc.temperature, ds); }
+                if (show == 18 && cc.condition != null) { return conditionStr(cc.condition); }
+            }
+        }
+        return null;
+    }
+
+    function getLabelString(show as Number) {
+        switch (show) {
+            case 1:  return "DATE";
+            case 2:  return "BB";
+            case 3:  return "HR";
+            case 4:  return "STEP";
+            case 5:  return "CAL";
+            case 6:  return "DIST";
+            case 7:  return "FLR";
+            case 8:  return "ACT";
+            case 9:  return "MOVE";
+            case 10: return "STR";
+            case 11: return "SPO2";
+            case 12: return "ELEV";
+            case 13: return "BARO";
+            case 14: return "TEMP";
+            case 15: return "BATT";
+            case 16: return "NOTIF";
+            case 17: return "WX";
+            case 18: return "WX";
+            default: return null;
+        }
+    }
+
+    function conditionStr(condition as Number) {
+        switch (condition) {
+            case Weather.CONDITION_CLEAR:
+            case Weather.CONDITION_MOSTLY_CLEAR:
+            case Weather.CONDITION_FAIR:           return "Clear";
+            case Weather.CONDITION_PARTLY_CLOUDY:
+            case Weather.CONDITION_MOSTLY_CLOUDY:
+            case Weather.CONDITION_THIN_CLOUDS:    return "P.Cldy";
+            case Weather.CONDITION_CLOUDY:         return "Cloudy";
+            case Weather.CONDITION_RAIN:
+            case Weather.CONDITION_LIGHT_RAIN:
+            case Weather.CONDITION_HEAVY_RAIN:
+            case Weather.CONDITION_SHOWERS:        return "Rain";
+            case Weather.CONDITION_SNOW:
+            case Weather.CONDITION_LIGHT_SNOW:
+            case Weather.CONDITION_HEAVY_SNOW:     return "Snow";
+            case Weather.CONDITION_THUNDERSTORMS:  return "Storm";
+            case Weather.CONDITION_FOG:
+            case Weather.CONDITION_HAZY:           return "Fog";
+            case Weather.CONDITION_WINDY:          return "Windy";
+            default: return "--";
+        }
     }
 
     function drawHands(dc as Dc, hour as Number, minute as Number) as Void {

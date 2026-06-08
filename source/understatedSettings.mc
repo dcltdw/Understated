@@ -10,10 +10,10 @@ import Toybox.Application;
 class UnderstatedSettings {
     var colorTheme = 0 as Number;
     var secondHand = 0 as Number;          // 0 Auto, 1 On, 2 Off
-    var slotShow = [0, 1, 0, 0];           // content id per slot
-    var slotFmt  = [0, 0, 0, 0];           // 0 Value, 1 Label+value, 2 Icon+value
-    var slotCol  = [0, 0, 0, 0];           // color id
-    var slotSize = [1, 1, 1, 1];           // 0 Tiny, 1 Small, 2 Medium, 3 Large
+    var slotShow as Array<Number> = [0, 1, 0, 0];  // content id per slot
+    var slotFmt  as Array<Number> = [0, 0, 0, 0];  // 0 Value, 1 Label+value, 2 Icon+value
+    var slotCol  as Array<Number> = [0, 0, 0, 0];  // color id
+    var slotSize as Array<Number> = [1, 1, 1, 1];  // 0 Tiny, 1 Small, 2 Medium, 3 Large
 
     function initialize() {
         loadLocal();
