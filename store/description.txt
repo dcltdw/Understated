@@ -1,11 +1,17 @@
 Understated is a minimal analog watch face where the hour hand doubles as your battery gauge.
 
-A clean Roman-numeral dial with hour, minute, and an optional second hand, plus the date — and nothing you don't need. As the battery drains, the "spent" portion of the hour hand fills in an accent color, so you can read your charge at a glance, with no numbers or icons.
+A clean Roman-numeral dial with hour, minute, and an optional second hand — and nothing you don't need. As the battery drains, the "spent" portion of the hour hand fills in an accent color, so you can read your charge at a glance — no numbers, no icons.
 
+Add up to four data fields, at the 12, 3, 6, and 9 positions. Each one is your choice of metric, style, color, and size:
+• Choose from date, body battery, heart rate, steps, calories, distance, floors climbed, active minutes, move bar, stress, Pulse Ox, elevation, barometric pressure, temperature, device battery, notifications, and weather (temperature or condition)
+• Show it as a value, a label + value, or an icon + value
+• Pick any color — including Accent, which follows the dial's theme — and a Tiny, Small, Medium, or Large size
+
+More:
 • Battery-as-hour-hand — a subtle, built-in battery gauge
-• 8 colors: Blue, Green, Purple, Red, Yellow, Black/Gold, Black/Silver, and Multi (a different color each day)
+• 8 dial colors: Blue, Green, Purple, Red, Yellow, Black/Gold, Black/Silver, and Multi (a different color each day)
 • Optional second hand while the watch is awake
 • Crisp on every display — MIP and AMOLED, round and rectangular
 • AMOLED always-on, burn-in safe
 
-Set the color and second hand in the watch face settings.
+Configure everything from your phone in the Garmin Connect app — dial color, second hand, and all four data fields.
