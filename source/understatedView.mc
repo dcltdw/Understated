@@ -103,10 +103,9 @@ class UnderstatedView extends WatchUi.View {
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_ORANGE;
                 break;
-            default: // invalid colorTheme: recover to Blue and persist the fix
+            default: // invalid colorTheme: recover to Blue
                 System.println("error in View!  target_theme = " + target_theme);
                 mySettings.colorTheme = 0;
-                mySettings.saveLocal();
                 target_theme = 0;
                 background_color = 0x0000FF;
                 numerals_color = 0xFFFFFF;
@@ -168,7 +167,7 @@ class UnderstatedView extends WatchUi.View {
         // Second hand only while awake. In high power onUpdate runs ~1/sec so it
         // ticks; in low power onUpdate is ~1/min (it would freeze) and AMOLED uses
         // the burn-in-safe path above, so it's intentionally omitted there.
-        if (!isLowPower and mySettings.secondHand) {
+        if (!isLowPower and mySettings.showSecondHand()) {
             drawSecondHand(dc, _now.sec);
         }
     }

@@ -1,0 +1,237 @@
+<settings>
+    <setting propertyKey="@Properties.colorTheme" title="Color theme">
+        <settingConfig type="list">
+            <listEntry value="0">Blue</listEntry>
+            <listEntry value="1">Green</listEntry>
+            <listEntry value="2">Purple</listEntry>
+            <listEntry value="3">Red</listEntry>
+            <listEntry value="4">Yellow</listEntry>
+            <listEntry value="5">Black/Gold</listEntry>
+            <listEntry value="6">Black/Silver</listEntry>
+            <listEntry value="7">Multi</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.secondHand" title="Second hand">
+        <settingConfig type="list">
+            <listEntry value="0">Auto (by device)</listEntry>
+            <listEntry value="1">On</listEntry>
+            <listEntry value="2">Off</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.s12Show" title="12 o'clock (top) - Show">
+        <settingConfig type="list">
+            <listEntry value="0">Off</listEntry>
+            <listEntry value="1">Date</listEntry>
+            <listEntry value="2">Body Battery</listEntry>
+            <listEntry value="3">Heart rate</listEntry>
+            <listEntry value="4">Steps</listEntry>
+            <listEntry value="5">Calories</listEntry>
+            <listEntry value="6">Distance</listEntry>
+            <listEntry value="7">Floors climbed</listEntry>
+            <listEntry value="8">Active minutes</listEntry>
+            <listEntry value="9">Move bar</listEntry>
+            <listEntry value="10">Stress</listEntry>
+            <listEntry value="11">Pulse Ox</listEntry>
+            <listEntry value="12">Elevation</listEntry>
+            <listEntry value="13">Barometric pressure</listEntry>
+            <listEntry value="14">Temperature</listEntry>
+            <listEntry value="15">Device battery</listEntry>
+            <listEntry value="16">Notifications</listEntry>
+            <listEntry value="17">Weather - temperature</listEntry>
+            <listEntry value="18">Weather - condition</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.s12Fmt" title="12 o'clock (top) - Format">
+        <settingConfig type="list">
+            <listEntry value="0">Value</listEntry>
+            <listEntry value="1">Label + value</listEntry>
+            <listEntry value="2">Icon + value</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.s12Col" title="12 o'clock (top) - Color">
+        <settingConfig type="list">
+            <listEntry value="0">White</listEntry>
+            <listEntry value="1">Light gray</listEntry>
+            <listEntry value="2">Red</listEntry>
+            <listEntry value="3">Orange</listEntry>
+            <listEntry value="4">Yellow</listEntry>
+            <listEntry value="5">Green</listEntry>
+            <listEntry value="6">Cyan</listEntry>
+            <listEntry value="7">Blue</listEntry>
+            <listEntry value="8">Magenta</listEntry>
+            <listEntry value="9">Pink</listEntry>
+            <listEntry value="10">Black</listEntry>
+            <listEntry value="11">Accent</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.s12Size" title="12 o'clock (top) - Text size">
+        <settingConfig type="list">
+            <listEntry value="0">Tiny</listEntry>
+            <listEntry value="1">Small</listEntry>
+            <listEntry value="2">Medium</listEntry>
+            <listEntry value="3">Large</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.s3Show" title="3 o'clock (right) - Show">
+        <settingConfig type="list">
+            <listEntry value="0">Off</listEntry>
+            <listEntry value="1">Date</listEntry>
+            <listEntry value="2">Body Battery</listEntry>
+            <listEntry value="3">Heart rate</listEntry>
+            <listEntry value="4">Steps</listEntry>
+            <listEntry value="5">Calories</listEntry>
+            <listEntry value="6">Distance</listEntry>
+            <listEntry value="7">Floors climbed</listEntry>
+            <listEntry value="8">Active minutes</listEntry>
+            <listEntry value="9">Move bar</listEntry>
+            <listEntry value="10">Stress</listEntry>
+            <listEntry value="11">Pulse Ox</listEntry>
+            <listEntry value="12">Elevation</listEntry>
+            <listEntry value="13">Barometric pressure</listEntry>
+            <listEntry value="14">Temperature</listEntry>
+            <listEntry value="15">Device battery</listEntry>
+            <listEntry value="16">Notifications</listEntry>
+            <listEntry value="17">Weather - temperature</listEntry>
+            <listEntry value="18">Weather - condition</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.s3Fmt" title="3 o'clock (right) - Format">
+        <settingConfig type="list">
+            <listEntry value="0">Value</listEntry>
+            <listEntry value="1">Label + value</listEntry>
+            <listEntry value="2">Icon + value</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.s3Col" title="3 o'clock (right) - Color">
+        <settingConfig type="list">
+            <listEntry value="0">White</listEntry>
+            <listEntry value="1">Light gray</listEntry>
+            <listEntry value="2">Red</listEntry>
+            <listEntry value="3">Orange</listEntry>
+            <listEntry value="4">Yellow</listEntry>
+            <listEntry value="5">Green</listEntry>
+            <listEntry value="6">Cyan</listEntry>
+            <listEntry value="7">Blue</listEntry>
+            <listEntry value="8">Magenta</listEntry>
+            <listEntry value="9">Pink</listEntry>
+            <listEntry value="10">Black</listEntry>
+            <listEntry value="11">Accent</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.s3Size" title="3 o'clock (right) - Text size">
+        <settingConfig type="list">
+            <listEntry value="0">Tiny</listEntry>
+            <listEntry value="1">Small</listEntry>
+            <listEntry value="2">Medium</listEntry>
+            <listEntry value="3">Large</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.s6Show" title="6 o'clock (bottom) - Show">
+        <settingConfig type="list">
+            <listEntry value="0">Off</listEntry>
+            <listEntry value="1">Date</listEntry>
+            <listEntry value="2">Body Battery</listEntry>
+            <listEntry value="3">Heart rate</listEntry>
+            <listEntry value="4">Steps</listEntry>
+            <listEntry value="5">Calories</listEntry>
+            <listEntry value="6">Distance</listEntry>
+            <listEntry value="7">Floors climbed</listEntry>
+            <listEntry value="8">Active minutes</listEntry>
+            <listEntry value="9">Move bar</listEntry>
+            <listEntry value="10">Stress</listEntry>
+            <listEntry value="11">Pulse Ox</listEntry>
+            <listEntry value="12">Elevation</listEntry>
+            <listEntry value="13">Barometric pressure</listEntry>
+            <listEntry value="14">Temperature</listEntry>
+            <listEntry value="15">Device battery</listEntry>
+            <listEntry value="16">Notifications</listEntry>
+            <listEntry value="17">Weather - temperature</listEntry>
+            <listEntry value="18">Weather - condition</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.s6Fmt" title="6 o'clock (bottom) - Format">
+        <settingConfig type="list">
+            <listEntry value="0">Value</listEntry>
+            <listEntry value="1">Label + value</listEntry>
+            <listEntry value="2">Icon + value</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.s6Col" title="6 o'clock (bottom) - Color">
+        <settingConfig type="list">
+            <listEntry value="0">White</listEntry>
+            <listEntry value="1">Light gray</listEntry>
+            <listEntry value="2">Red</listEntry>
+            <listEntry value="3">Orange</listEntry>
+            <listEntry value="4">Yellow</listEntry>
+            <listEntry value="5">Green</listEntry>
+            <listEntry value="6">Cyan</listEntry>
+            <listEntry value="7">Blue</listEntry>
+            <listEntry value="8">Magenta</listEntry>
+            <listEntry value="9">Pink</listEntry>
+            <listEntry value="10">Black</listEntry>
+            <listEntry value="11">Accent</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.s6Size" title="6 o'clock (bottom) - Text size">
+        <settingConfig type="list">
+            <listEntry value="0">Tiny</listEntry>
+            <listEntry value="1">Small</listEntry>
+            <listEntry value="2">Medium</listEntry>
+            <listEntry value="3">Large</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.s9Show" title="9 o'clock (left) - Show">
+        <settingConfig type="list">
+            <listEntry value="0">Off</listEntry>
+            <listEntry value="1">Date</listEntry>
+            <listEntry value="2">Body Battery</listEntry>
+            <listEntry value="3">Heart rate</listEntry>
+            <listEntry value="4">Steps</listEntry>
+            <listEntry value="5">Calories</listEntry>
+            <listEntry value="6">Distance</listEntry>
+            <listEntry value="7">Floors climbed</listEntry>
+            <listEntry value="8">Active minutes</listEntry>
+            <listEntry value="9">Move bar</listEntry>
+            <listEntry value="10">Stress</listEntry>
+            <listEntry value="11">Pulse Ox</listEntry>
+            <listEntry value="12">Elevation</listEntry>
+            <listEntry value="13">Barometric pressure</listEntry>
+            <listEntry value="14">Temperature</listEntry>
+            <listEntry value="15">Device battery</listEntry>
+            <listEntry value="16">Notifications</listEntry>
+            <listEntry value="17">Weather - temperature</listEntry>
+            <listEntry value="18">Weather - condition</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.s9Fmt" title="9 o'clock (left) - Format">
+        <settingConfig type="list">
+            <listEntry value="0">Value</listEntry>
+            <listEntry value="1">Label + value</listEntry>
+            <listEntry value="2">Icon + value</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.s9Col" title="9 o'clock (left) - Color">
+        <settingConfig type="list">
+            <listEntry value="0">White</listEntry>
+            <listEntry value="1">Light gray</listEntry>
+            <listEntry value="2">Red</listEntry>
+            <listEntry value="3">Orange</listEntry>
+            <listEntry value="4">Yellow</listEntry>
+            <listEntry value="5">Green</listEntry>
+            <listEntry value="6">Cyan</listEntry>
+            <listEntry value="7">Blue</listEntry>
+            <listEntry value="8">Magenta</listEntry>
+            <listEntry value="9">Pink</listEntry>
+            <listEntry value="10">Black</listEntry>
+            <listEntry value="11">Accent</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.s9Size" title="9 o'clock (left) - Text size">
+        <settingConfig type="list">
+            <listEntry value="0">Tiny</listEntry>
+            <listEntry value="1">Small</listEntry>
+            <listEntry value="2">Medium</listEntry>
+            <listEntry value="3">Large</listEntry>
+        </settingConfig>
+    </setting>
+</settings>
