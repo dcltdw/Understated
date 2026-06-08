@@ -288,17 +288,108 @@ class UnderstatedView extends WatchUi.View {
             if (show == 0) { continue; }
             var val = getValueString(show, _now);
             if (val == null) { val = "--"; }
-            var text = val;
-            if (mySettings.slotFmt[i] == 1) {   // Label + value
-                var lbl = getLabelString(show);
-                if (lbl != null) { text = lbl + " " + val; }
+            var color = resolveColor(mySettings.slotCol[i]);
+            var font = resolveFont(mySettings.slotSize[i]);
+            var fmt = mySettings.slotFmt[i];
+
+            if (fmt == 2) {                      // Icon + value
+                var fh = dc.getFontHeight(font);
+                var ih = fh * 0.8;
+                var gap = ih * 0.35;
+                var tw = dc.getTextWidthInPixels(val, font);
+                var startX = px[i] - (ih + gap + tw) / 2.0;
+                drawIcon(dc, show, startX + ih / 2.0, py[i], ih, color);
+                dc.setColor(color, Graphics.COLOR_TRANSPARENT);
+                dc.drawText(startX + ih + gap, py[i], font, val,
+                    Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+            } else {
+                var text = val;
+                if (fmt == 1) {                  // Label + value
+                    var lbl = getLabelString(show);
+                    if (lbl != null) { text = lbl + " " + val; }
+                }
+                dc.setColor(color, Graphics.COLOR_TRANSPARENT);
+                dc.drawText(px[i], py[i], font, text,
+                    Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
             }
-            // Format 2 (Icon + value) is added in a later commit; for now it
-            // falls through to value-only.
-            dc.setColor(resolveColor(mySettings.slotCol[i]), Graphics.COLOR_TRANSPARENT);
-            dc.drawText(px[i], py[i], resolveFont(mySettings.slotSize[i]), text,
-                Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
         }
+    }
+
+    // Minimalist programmatic icon glyphs, height h, centered at (cx,cy), in
+    // the given color (so they scale and colorize per slot).
+    function drawIcon(dc as Dc, show as Number, cx, cy, h, color as Number) as Void {
+        var half = h / 2.0;
+        var pw = h / 9.0;
+        if (pw < 1) { pw = 1; }
+        dc.setColor(color, Graphics.COLOR_TRANSPARENT);
+        dc.setPenWidth(pw);
+
+        if (show == 2 || show == 15) {                 // Battery
+            dc.drawRectangle(cx - half, cy - h * 0.28, h * 0.82, h * 0.56);
+            dc.fillRectangle(cx - half + h * 0.82, cy - h * 0.12, h * 0.1, h * 0.24);
+            dc.fillRectangle(cx - half + h * 0.1, cy - h * 0.16, h * 0.42, h * 0.32);
+        } else if (show == 3) {                        // Heart
+            var rr = h * 0.26;
+            dc.fillCircle(cx - rr * 0.75, cy - h * 0.12, rr);
+            dc.fillCircle(cx + rr * 0.75, cy - h * 0.12, rr);
+            dc.fillPolygon([[cx - half * 0.92, cy - h * 0.06], [cx + half * 0.92, cy - h * 0.06], [cx, cy + half]]);
+        } else if (show == 14) {                       // Thermometer (temperature)
+            dc.drawLine(cx, cy - half, cx, cy + h * 0.18);
+            dc.fillCircle(cx, cy + h * 0.3, h * 0.17);
+        } else if (show == 17) {                        // Sun (weather temp)
+            dc.fillCircle(cx, cy, h * 0.22);
+            for (var a = 0; a < 8; a += 1) {
+                var th = a * 45 * Math.PI / 180.0;
+                dc.drawLine(cx + Math.cos(th) * h * 0.32, cy + Math.sin(th) * h * 0.32,
+                            cx + Math.cos(th) * half, cy + Math.sin(th) * half);
+            }
+        } else if (show == 18) {                        // Cloud (weather condition)
+            dc.fillRectangle(cx - h * 0.38, cy, h * 0.66, h * 0.18);
+            dc.fillCircle(cx - h * 0.2, cy, h * 0.16);
+            dc.fillCircle(cx + h * 0.02, cy - h * 0.08, h * 0.2);
+            dc.fillCircle(cx + h * 0.24, cy, h * 0.14);
+        } else if (show == 16) {                        // Bell (notifications)
+            dc.fillPolygon([[cx - h * 0.28, cy + h * 0.16], [cx - h * 0.2, cy - h * 0.12],
+                            [cx + h * 0.2, cy - h * 0.12], [cx + h * 0.28, cy + h * 0.16]]);
+            dc.fillCircle(cx, cy - h * 0.18, h * 0.07);
+            dc.fillCircle(cx, cy + h * 0.3, h * 0.07);
+        } else if (show == 12) {                        // Mountain (elevation)
+            dc.fillPolygon([[cx - half, cy + half], [cx - h * 0.12, cy - h * 0.18], [cx + h * 0.18, cy + half]]);
+            dc.fillPolygon([[cx - h * 0.05, cy + half], [cx + h * 0.2, cy - half], [cx + half, cy + half]]);
+        } else if (show == 9) {                         // Move bar (bars)
+            dc.fillRectangle(cx - half, cy + h * 0.06, h * 0.2, h * 0.34);
+            dc.fillRectangle(cx - half + h * 0.3, cy - h * 0.1, h * 0.2, h * 0.5);
+            dc.fillRectangle(cx - half + h * 0.6, cy - h * 0.28, h * 0.2, h * 0.68);
+        } else if (show == 7) {                         // Stairs (floors)
+            dc.fillRectangle(cx - half, cy + h * 0.2, h * 0.33, h * 0.2);
+            dc.fillRectangle(cx - half + h * 0.2, cy, h * 0.33, h * 0.4);
+            dc.fillRectangle(cx - half + h * 0.4, cy - h * 0.2, h * 0.4, h * 0.6);
+        } else if (show == 5) {                         // Flame (calories)
+            dc.fillPolygon([[cx, cy - half], [cx + h * 0.3, cy], [cx + h * 0.18, cy + half],
+                            [cx - h * 0.18, cy + half], [cx - h * 0.3, cy]]);
+        } else if (show == 11) {                        // Droplet (pulse ox)
+            dc.fillPolygon([[cx, cy - half], [cx + h * 0.3, cy + h * 0.1], [cx - h * 0.3, cy + h * 0.1]]);
+            dc.fillCircle(cx, cy + h * 0.15, h * 0.3);
+        } else if (show == 6) {                         // Pin (distance)
+            dc.fillCircle(cx, cy - h * 0.1, h * 0.28);
+            dc.fillPolygon([[cx - h * 0.22, cy], [cx + h * 0.22, cy], [cx, cy + half]]);
+        } else if (show == 1) {                         // Calendar (date)
+            dc.drawRectangle(cx - half, cy - h * 0.32, h, h * 0.72);
+            dc.fillRectangle(cx - half, cy - h * 0.32, h, h * 0.2);
+        } else if (show == 10 || show == 13) {          // Gauge (stress / pressure)
+            dc.drawArc(cx, cy + h * 0.15, half, Graphics.ARC_CLOCKWISE, 200, -20);
+            dc.drawLine(cx, cy + h * 0.15, cx + h * 0.28, cy - h * 0.2);
+        } else if (show == 4) {                         // Foot (steps)
+            dc.fillCircle(cx, cy + h * 0.05, h * 0.27);
+            dc.fillCircle(cx + h * 0.22, cy - h * 0.22, h * 0.1);
+        } else if (show == 8) {                         // Lightning (active minutes)
+            dc.fillPolygon([[cx + h * 0.12, cy - half], [cx - h * 0.28, cy + h * 0.05],
+                            [cx - h * 0.02, cy + h * 0.05], [cx - h * 0.12, cy + half],
+                            [cx + h * 0.28, cy - h * 0.05], [cx + h * 0.02, cy - h * 0.05]]);
+        } else {                                        // generic dot
+            dc.fillCircle(cx, cy, h * 0.2);
+        }
+        dc.setPenWidth(1);
     }
 
     function resolveColor(id as Number) as Number {
