@@ -15,7 +15,7 @@ image). Dark banner with the app name and three themes (blue/purple/red) at
 
 ## Screenshots
 
-Two sets, one image per color theme (`1-blue` … `7-black_silver`):
+One image per color theme (`1-blue` … `7-black_silver`).
 
 ### `screenshots/sim/` — true simulator captures (use these for the store)
 
@@ -26,13 +26,6 @@ to the watch face, normalized to **454×454** (Venu 3 native). They show time
 color), the date, and the second hand (the capable-device default; fr55 and
 other constrained devices default it off).
 
-### `screenshots/*.png` — vector renders (reference / fallback)
-
-Generated from the exact dial geometry/colors via `gen_screens.py` →
-`rsvg-convert` (454×454, `.svg` source alongside). The numeral font is
-Helvetica (a stand-in for `FONT_TINY`); colors are the AMOLED/full-color
-values. Kept as a resolution-independent reference.
-
 ### Capturing more sim screenshots
 
 Load the app in the simulator and either use **File → Save Screen Shot** (clean
@@ -42,7 +35,12 @@ color via **Settings → Color**, or force `colorTheme` in
 awake, capturable display (Screen Recording permission required for
 `screencapture`).
 
-### Regenerate the renders
+### Optional vector renders (not committed)
+
+`gen_screens.py` → `rsvg-convert` can generate resolution-independent SVG/PNG
+mockups of the dial into `screenshots/` (Helvetica stands in for `FONT_TINY`).
+These aren't committed — the simulator captures above are what ship — so make
+them only if you want a quick vector reference:
 
 ```sh
 python3 gen_screens.py
