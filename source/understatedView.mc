@@ -266,8 +266,10 @@ class UnderstatedView extends WatchUi.View {
         var height = dc.getHeight();
         var theta = (15 - sec) * 6 * Math.PI / 180;
         var len = width * 0.42;
+        var secW = Math.round(width / 208.0).toNumber();
+        if (secW < 1) { secW = 1; }
         dc.setColor(battery_discharged_color, Graphics.COLOR_TRANSPARENT);
-        dc.setPenWidth(1);
+        dc.setPenWidth(secW);
         dc.drawLine(width / 2, height / 2,
             width / 2 + Math.cos(theta) * len, height / 2 - Math.sin(theta) * len);
     }
@@ -315,16 +317,25 @@ class UnderstatedView extends WatchUi.View {
         var unchargedHourHandEndX = hourHandStartX + Math.cos(hourTheta)*unchargedHourHandLength;
         var unchargedHourHandEndY = hourHandStartY - Math.sin(hourTheta)*unchargedHourHandLength;
 
-        // Battery gauge: the "discharged" portion of the hour hand.
+        // Hand widths scale with screen size (2 px minute / 3 px hour on the
+        // fr55's 208 px screen), floored so they're never thinner than that.
+        var minW = Math.round(WIDTH * 2.0 / 208.0).toNumber();
+        if (minW < 2) { minW = 2; }
+        var hourW = Math.round(WIDTH * 3.0 / 208.0).toNumber();
+        if (hourW < 3) { hourW = 3; }
+
+        // Battery gauge: the "discharged" portion of the hour hand, drawn at the
+        // same width as the rest of the hour hand.
         dc.setColor(battery_discharged_color, Graphics.COLOR_TRANSPARENT);
+        dc.setPenWidth(hourW);
         dc.drawLine(hourHandStartX, hourHandStartY, unchargedHourHandEndX, unchargedHourHandEndY);
 
         dc.setColor(hands_color, Graphics.COLOR_TRANSPARENT);
 
-        dc.setPenWidth(2);
+        dc.setPenWidth(minW);
         dc.drawLine(minHandStartX, minHandStartY, minHandEndX, minHandEndY);
 
-        dc.setPenWidth(3);
+        dc.setPenWidth(hourW);
         dc.drawLine(unchargedHourHandEndX, unchargedHourHandEndY, maxHourHandEndX, maxHourHandEndY);
     }
 }
