@@ -10,8 +10,9 @@ Assets for the Connect IQ store listing.
 ## Hero image (`hero.png`)
 
 The store banner — **1440×720** (the size the store requires for the hero
-image). Dark banner with the app name and three themes (blue/purple/red) at
-10:10.
+image). Dark banner with the app name over three simulator faces telling the
+configurability story: a bare dial (Black/Silver), the date only (Blue), and
+all four data fields (Green). Source captures are in `screenshots/hero/`.
 
 ## Screenshots
 
