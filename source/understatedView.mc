@@ -66,7 +66,7 @@ class UnderstatedView extends WatchUi.View {
                 battery_discharged_color = Graphics.COLOR_ORANGE;
                 break;
             case 1: // Green
-                background_color = 0x00FF00;
+                background_color = 0x008000; // darker green on full-color; fr55 quantizes to its palette green
                 numerals_color = 0xFFFF00; // yellow numerals (cyan unreadable on green), white date
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
