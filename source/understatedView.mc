@@ -66,7 +66,7 @@ class UnderstatedView extends WatchUi.View {
                 numerals_color = 0x00FFFF; // cyan numerals, white date
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
-                battery_discharged_color = Graphics.COLOR_ORANGE;
+                battery_discharged_color = 0xC77B45; // muted amber (was orange)
                 muted_color = 0x7E84C8;
                 accent_color = 0xB6BCEC;
                 secondhand_color = 0xDCDFFA;
@@ -76,7 +76,7 @@ class UnderstatedView extends WatchUi.View {
                 numerals_color = 0xFFFF00; // yellow numerals (cyan unreadable on green), white date
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
-                battery_discharged_color = Graphics.COLOR_DK_BLUE;
+                battery_discharged_color = 0x4E5A88; // muted slate blue (was dk blue)
                 muted_color = 0x6FB088;
                 accent_color = 0xACDCC0;
                 secondhand_color = 0xD6F0E0;
@@ -86,7 +86,7 @@ class UnderstatedView extends WatchUi.View {
                 numerals_color = 0x00FFFF; // cyan numerals, white date
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
-                battery_discharged_color = Graphics.COLOR_BLUE;
+                battery_discharged_color = 0x3E86AE; // muted teal (was azure)
                 muted_color = 0xB07EB0;
                 accent_color = 0xD8B4D8;
                 secondhand_color = 0xECDAEC;
@@ -96,7 +96,7 @@ class UnderstatedView extends WatchUi.View {
                 numerals_color = 0xFFFF00;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
-                battery_discharged_color = Graphics.COLOR_GREEN;
+                battery_discharged_color = 0x3E955A; // muted green (was neon green)
                 muted_color = 0xE08C8C;
                 accent_color = 0xF8C4C4;
                 secondhand_color = 0xFFE0E0;
@@ -106,7 +106,7 @@ class UnderstatedView extends WatchUi.View {
                 numerals_color = 0x000000;
                 date_color = Graphics.COLOR_BLACK;
                 hands_color = Graphics.COLOR_BLACK;
-                battery_discharged_color = Graphics.COLOR_RED;
+                battery_discharged_color = 0xC0543C; // muted brick (was red)
                 muted_color = 0x6E5A12;
                 accent_color = 0x3C3008;
                 secondhand_color = 0x201A04;
@@ -116,7 +116,7 @@ class UnderstatedView extends WatchUi.View {
                 numerals_color = 0xFFFF00;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
-                battery_discharged_color = Graphics.COLOR_PINK;
+                battery_discharged_color = 0xA85F80; // muted rose (was pink)
                 muted_color = 0x7A6526;
                 accent_color = 0xB89A3A;
                 secondhand_color = 0xE8CF6A;
@@ -126,7 +126,7 @@ class UnderstatedView extends WatchUi.View {
                 numerals_color = 0xC0C0C0; // silver-grey numerals on full-color; fr55 quantizes to white
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
-                battery_discharged_color = Graphics.COLOR_ORANGE;
+                battery_discharged_color = 0xBE7340; // muted amber (was orange)
                 muted_color = 0x6E7176;
                 accent_color = 0xAEB2B8;
                 secondhand_color = 0xDEE2E8;
@@ -139,7 +139,7 @@ class UnderstatedView extends WatchUi.View {
                 numerals_color = 0xFFFFFF;
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
-                battery_discharged_color = Graphics.COLOR_ORANGE;
+                battery_discharged_color = 0xC77B45; // muted amber (recover-to-Blue)
                 muted_color = 0x7E84C8;
                 accent_color = 0xB6BCEC;
                 secondhand_color = 0xDCDFFA;
