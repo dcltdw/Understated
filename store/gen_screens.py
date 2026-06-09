@@ -18,7 +18,7 @@ def hx(v): return "#%06X" % v
 # theme: (name, background, numerals, date, hands, battery_accent)  [AMOLED true hex]
 THEMES = [
     ("1-blue",          0x0000FF, 0x00FFFF, 0xFFFFFF, 0xFFFFFF, 0xFF5500),
-    ("2-green",         0x00FF00, 0xFFFF00, 0xFFFFFF, 0xFFFFFF, 0x0000AA),
+    ("2-green",         0x008000, 0xFFFF00, 0xFFFFFF, 0xFFFFFF, 0x0000AA),
     ("3-purple",        0xFF00FF, 0x00FFFF, 0xFFFFFF, 0xFFFFFF, 0x00AAFF),
     ("4-red",           0xFF0000, 0xFFFF00, 0xFFFFFF, 0xFFFFFF, 0x00FF00),
     ("5-yellow",        0xFFFF00, 0x000000, 0x000000, 0x000000, 0xFF0000),
