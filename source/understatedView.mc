@@ -21,7 +21,10 @@ class UnderstatedView extends WatchUi.View {
     var numerals_color;
     var date_color;
     var hands_color;
-    var battery_discharged_color;
+    var battery_discharged_color; // battery sliver on the hour hand
+    var muted_color;              // per-theme low-contrast data-field color
+    var accent_color;             // per-theme bold data-field color
+    var secondhand_color;         // per-theme highest-contrast color (second hand + data fields)
     var isLowPower = false;       // true while the watch is in low-power (sleep) mode
     var burnInProtect = false;    // device requires AMOLED burn-in protection
 
@@ -64,6 +67,9 @@ class UnderstatedView extends WatchUi.View {
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_ORANGE;
+                muted_color = 0x7E84C8;
+                accent_color = 0xB6BCEC;
+                secondhand_color = 0xDCDFFA;
                 break;
             case 1: // Green
                 background_color = 0x008000; // darker green on full-color; fr55 quantizes to its palette green
@@ -71,6 +77,9 @@ class UnderstatedView extends WatchUi.View {
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_DK_BLUE;
+                muted_color = 0x6FB088;
+                accent_color = 0xACDCC0;
+                secondhand_color = 0xD6F0E0;
                 break;
             case 2: // Purple
                 background_color = 0x800080; // muted purple on full-color; fr55 quantizes to magenta
@@ -78,6 +87,9 @@ class UnderstatedView extends WatchUi.View {
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_BLUE;
+                muted_color = 0xB07EB0;
+                accent_color = 0xD8B4D8;
+                secondhand_color = 0xECDAEC;
                 break;
             case 3: // Red
                 background_color = 0xFF0000;
@@ -85,6 +97,9 @@ class UnderstatedView extends WatchUi.View {
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_GREEN;
+                muted_color = 0xE08C8C;
+                accent_color = 0xF8C4C4;
+                secondhand_color = 0xFFE0E0;
                 break;
             case 4: // Yellow (burnished gold)
                 background_color = 0xC8A415; // burnished gold on full-color; fr55 quantizes to yellow
@@ -92,6 +107,9 @@ class UnderstatedView extends WatchUi.View {
                 date_color = Graphics.COLOR_BLACK;
                 hands_color = Graphics.COLOR_BLACK;
                 battery_discharged_color = Graphics.COLOR_RED;
+                muted_color = 0x6E5A12;
+                accent_color = 0x3C3008;
+                secondhand_color = 0x201A04;
                 break;
             case 5: // Black/Gold (gold -> yellow)
                 background_color = 0x000000;
@@ -99,6 +117,9 @@ class UnderstatedView extends WatchUi.View {
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_PINK;
+                muted_color = 0x7A6526;
+                accent_color = 0xB89A3A;
+                secondhand_color = 0xE8CF6A;
                 break;
             case 6: // Black/Silver
                 background_color = 0x000000;
@@ -106,6 +127,9 @@ class UnderstatedView extends WatchUi.View {
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_ORANGE;
+                muted_color = 0x6E7176;
+                accent_color = 0xAEB2B8;
+                secondhand_color = 0xDEE2E8;
                 break;
             default: // invalid colorTheme: recover to Blue
                 System.println("error in View!  target_theme = " + target_theme);
@@ -116,6 +140,9 @@ class UnderstatedView extends WatchUi.View {
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_ORANGE;
+                muted_color = 0x7E84C8;
+                accent_color = 0xB6BCEC;
+                secondhand_color = 0xDCDFFA;
         }
         last_theme = target_theme;
 
@@ -266,7 +293,7 @@ class UnderstatedView extends WatchUi.View {
         var len = width * 0.42;
         var secW = Math.round(width / 208.0).toNumber();
         if (secW < 1) { secW = 1; }
-        dc.setColor(battery_discharged_color, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(secondhand_color, Graphics.COLOR_TRANSPARENT);
         dc.setPenWidth(secW);
         dc.drawLine(width / 2, height / 2,
             width / 2 + Math.cos(theta) * len, height / 2 - Math.sin(theta) * len);
@@ -437,7 +464,9 @@ class UnderstatedView extends WatchUi.View {
             case 8:  return 0xFF00FF;  // Magenta
             case 9:  return 0xFFAAFF;  // Pink
             case 10: return 0x000000;  // Black
-            case 11: return battery_discharged_color;  // Accent (theme)
+            case 11: return accent_color;        // Accent (theme, bold)
+            case 12: return muted_color;         // Muted (theme, soft)
+            case 13: return secondhand_color;    // Second hand (theme, highest contrast)
             default: return 0xFFFFFF;
         }
     }

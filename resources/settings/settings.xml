@@ -62,6 +62,8 @@
             <listEntry value="9">Pink</listEntry>
             <listEntry value="10">Black</listEntry>
             <listEntry value="11">Accent</listEntry>
+            <listEntry value="12">Muted</listEntry>
+            <listEntry value="13">Second hand</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.s12Size" title="12 o'clock (top) - Text size">
@@ -116,6 +118,8 @@
             <listEntry value="9">Pink</listEntry>
             <listEntry value="10">Black</listEntry>
             <listEntry value="11">Accent</listEntry>
+            <listEntry value="12">Muted</listEntry>
+            <listEntry value="13">Second hand</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.s3Size" title="3 o'clock (right) - Text size">
@@ -170,6 +174,8 @@
             <listEntry value="9">Pink</listEntry>
             <listEntry value="10">Black</listEntry>
             <listEntry value="11">Accent</listEntry>
+            <listEntry value="12">Muted</listEntry>
+            <listEntry value="13">Second hand</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.s6Size" title="6 o'clock (bottom) - Text size">
@@ -224,6 +230,8 @@
             <listEntry value="9">Pink</listEntry>
             <listEntry value="10">Black</listEntry>
             <listEntry value="11">Accent</listEntry>
+            <listEntry value="12">Muted</listEntry>
+            <listEntry value="13">Second hand</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.s9Size" title="9 o'clock (left) - Text size">
