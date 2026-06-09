@@ -72,8 +72,8 @@ class UnderstatedView extends WatchUi.View {
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_DK_BLUE;
                 break;
-            case 2: // Purple (-> magenta on fr55's palette)
-                background_color = 0xFF00FF;
+            case 2: // Purple
+                background_color = 0x800080; // muted purple on full-color; fr55 quantizes to magenta
                 numerals_color = 0x00FFFF; // cyan numerals, white date
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
@@ -86,8 +86,8 @@ class UnderstatedView extends WatchUi.View {
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = Graphics.COLOR_GREEN;
                 break;
-            case 4: // Yellow
-                background_color = 0xFFFF00;
+            case 4: // Yellow (burnished gold)
+                background_color = 0xC8A415; // burnished gold on full-color; fr55 quantizes to yellow
                 numerals_color = 0x000000;
                 date_color = Graphics.COLOR_BLACK;
                 hands_color = Graphics.COLOR_BLACK;
