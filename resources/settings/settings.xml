@@ -46,6 +46,7 @@
             <listEntry value="0">Value</listEntry>
             <listEntry value="1">Label + value</listEntry>
             <listEntry value="2">Icon + value</listEntry>
+            <listEntry value="3">Icon</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.s12Col" title="12 o'clock (top) - Color">
@@ -102,6 +103,7 @@
             <listEntry value="0">Value</listEntry>
             <listEntry value="1">Label + value</listEntry>
             <listEntry value="2">Icon + value</listEntry>
+            <listEntry value="3">Icon</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.s3Col" title="3 o'clock (right) - Color">
@@ -158,6 +160,7 @@
             <listEntry value="0">Value</listEntry>
             <listEntry value="1">Label + value</listEntry>
             <listEntry value="2">Icon + value</listEntry>
+            <listEntry value="3">Icon</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.s6Col" title="6 o'clock (bottom) - Color">
@@ -214,6 +217,7 @@
             <listEntry value="0">Value</listEntry>
             <listEntry value="1">Label + value</listEntry>
             <listEntry value="2">Icon + value</listEntry>
+            <listEntry value="3">Icon</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.s9Col" title="9 o'clock (left) - Color">
