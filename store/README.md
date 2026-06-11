@@ -14,6 +14,14 @@ image). Dark banner with the app name over three simulator faces telling the
 configurability story: a bare dial (Black/Silver), the date only (Blue), and
 all four data fields (Green). Source captures are in `screenshots/hero/`.
 
+## Promo animation (`promo.gif`)
+
+A ~21s looping demo (360×360) that cycles the seven themes (~3s each) with
+crossfades, each showing a different field layout — bare, date-only, two and
+four fields, the Muted/Accent/Second-hand color tiers, icon and icon-only
+formats, and a weather condition icon. For the store/social, not the watch.
+Rebuild by re-capturing per-theme stills and reassembling with ImageMagick.
+
 ## Screenshots
 
 One image per color theme (`1-blue` … `7-black_silver`).
