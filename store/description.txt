@@ -4,8 +4,8 @@ A clean Roman-numeral dial with hour, minute, and an optional second hand — an
 
 Add up to four data fields, at the 12, 3, 6, and 9 positions. Each one is your choice of metric, style, color, and size:
 • Choose from date, body battery, heart rate, steps, calories, distance, floors climbed, active minutes, move bar, stress, Pulse Ox, elevation, barometric pressure, temperature, device battery, notifications, and weather (temperature or condition)
-• Show it as a value, a label + value, or an icon + value
-• Pick any color — including Accent, which follows the dial's theme — and a Tiny, Small, Medium, or Large size
+• Show it as a value, a label + value, an icon + value, or just an icon
+• Pick any color — including Accent, Muted, and Second hand, which follow the dial's theme — and a Tiny, Small, Medium, or Large size
 
 More:
 • Battery-as-hour-hand — a subtle, built-in battery gauge
@@ -15,3 +15,14 @@ More:
 • AMOLED always-on, burn-in safe
 
 Configure everything from your phone in the Garmin Connect app — dial color, second hand, and all four data fields.
+
+——————————————————————————
+
+Version history
+
+0.9.1 — Initial release.
+0.9.2 — Phone settings and four configurable data fields (12/3/6/9); refined theme colors (richer green, burnished gold, truer purple, silver numerals); per-field Muted / Accent / Second-hand colors; softer second hand and battery gauge.
+
+What's new in 0.9.3
+• Weather (condition) data field now shows a matching icon — sunny, partly cloudy, cloudy, rain, snow, storm, fog, or windy.
+• New "Icon" field format — show just the glyph, with no text.
