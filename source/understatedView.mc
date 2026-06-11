@@ -341,6 +341,8 @@ class UnderstatedView extends WatchUi.View {
             var w;
             if (fmt == 2) {                      // Icon + value
                 w = ih + igap + dc.getTextWidthInPixels(val, font);
+            } else if (fmt == 3) {               // Icon only
+                w = ih;
             } else {
                 if (fmt == 1) {                  // Label + value
                     var lbl = getLabelString(show);
@@ -366,6 +368,8 @@ class UnderstatedView extends WatchUi.View {
                 dc.setColor(color, Graphics.COLOR_TRANSPARENT);
                 dc.drawText(startX + ih + igap, oy, font, val,
                     Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+            } else if (fmt == 3) {               // Icon only
+                drawIcon(dc, show, startX + ih / 2.0, oy, ih, color);
             } else {
                 dc.setColor(color, Graphics.COLOR_TRANSPARENT);
                 dc.drawText(startX, oy, font, text,
@@ -402,11 +406,13 @@ class UnderstatedView extends WatchUi.View {
                 dc.drawLine(cx + Math.cos(th) * h * 0.32, cy + Math.sin(th) * h * 0.32,
                             cx + Math.cos(th) * half, cy + Math.sin(th) * half);
             }
-        } else if (show == 18) {                        // Cloud (weather condition)
-            dc.fillRectangle(cx - h * 0.38, cy, h * 0.66, h * 0.18);
-            dc.fillCircle(cx - h * 0.2, cy, h * 0.16);
-            dc.fillCircle(cx + h * 0.02, cy - h * 0.08, h * 0.2);
-            dc.fillCircle(cx + h * 0.24, cy, h * 0.14);
+        } else if (show == 18) {                        // Weather condition (live, condition-aware)
+            var wcat = 2; // cloud fallback
+            if (Toybox has :Weather) {
+                var cc = Weather.getCurrentConditions();
+                if (cc != null and cc.condition != null) { wcat = weatherCategory(cc.condition); }
+            }
+            drawWeather(dc, wcat, cx, cy, h);
         } else if (show == 16) {                        // Bell (notifications)
             dc.fillPolygon([[cx - h * 0.28, cy + h * 0.16], [cx - h * 0.2, cy - h * 0.12],
                             [cx + h * 0.2, cy - h * 0.12], [cx + h * 0.28, cy + h * 0.16]]);
@@ -449,6 +455,98 @@ class UnderstatedView extends WatchUi.View {
             dc.fillCircle(cx, cy, h * 0.2);
         }
         dc.setPenWidth(1);
+    }
+
+    // Maps a Weather.CONDITION_* value to a glyph category (mirrors the text
+    // groups in conditionStr): 0 clear, 1 partly cloudy, 2 cloudy, 3 rain,
+    // 4 snow, 5 storm, 6 fog, 7 windy.
+    function weatherCategory(condition as Number) as Number {
+        switch (condition) {
+            case Weather.CONDITION_CLEAR:
+            case Weather.CONDITION_MOSTLY_CLEAR:
+            case Weather.CONDITION_FAIR:           return 0;
+            case Weather.CONDITION_PARTLY_CLOUDY:
+            case Weather.CONDITION_MOSTLY_CLOUDY:
+            case Weather.CONDITION_THIN_CLOUDS:    return 1;
+            case Weather.CONDITION_CLOUDY:         return 2;
+            case Weather.CONDITION_RAIN:
+            case Weather.CONDITION_LIGHT_RAIN:
+            case Weather.CONDITION_HEAVY_RAIN:
+            case Weather.CONDITION_SHOWERS:        return 3;
+            case Weather.CONDITION_SNOW:
+            case Weather.CONDITION_LIGHT_SNOW:
+            case Weather.CONDITION_HEAVY_SNOW:     return 4;
+            case Weather.CONDITION_THUNDERSTORMS:  return 5;
+            case Weather.CONDITION_FOG:
+            case Weather.CONDITION_HAZY:           return 6;
+            case Weather.CONDITION_WINDY:          return 7;
+            default:                               return 2;
+        }
+    }
+
+    // Sun: filled disc + 8 rays, fitting a box of height h centered at (cx,cy).
+    function drawSun(dc as Dc, cx, cy, h) as Void {
+        dc.fillCircle(cx, cy, h * 0.20);
+        var pw = h / 11.0; if (pw < 1) { pw = 1; }
+        dc.setPenWidth(pw);
+        for (var a = 0; a < 8; a += 1) {
+            var th = a * 45 * Math.PI / 180.0;
+            dc.drawLine(cx + Math.cos(th) * h * 0.30, cy + Math.sin(th) * h * 0.30,
+                        cx + Math.cos(th) * h * 0.46, cy + Math.sin(th) * h * 0.46);
+        }
+    }
+
+    // Cloud: rounded blob, fitting a box of height h centered at (cx,cy).
+    function drawCloud(dc as Dc, cx, cy, h) as Void {
+        dc.fillRectangle(cx - h * 0.38, cy, h * 0.66, h * 0.18);
+        dc.fillCircle(cx - h * 0.2, cy, h * 0.16);
+        dc.fillCircle(cx + h * 0.02, cy - h * 0.08, h * 0.2);
+        dc.fillCircle(cx + h * 0.24, cy, h * 0.14);
+    }
+
+    // Draws the weather glyph for a category from weatherCategory().
+    function drawWeather(dc as Dc, cat as Number, cx, cy, h) as Void {
+        if (cat == 0) {                         // clear -> sun
+            drawSun(dc, cx, cy, h);
+        } else if (cat == 1) {                  // partly cloudy -> small sun + cloud
+            drawSun(dc, cx - h * 0.14, cy - h * 0.16, h * 0.58);
+            drawCloud(dc, cx + h * 0.10, cy + h * 0.12, h * 0.85);
+        } else if (cat == 2) {                  // cloudy -> cloud
+            drawCloud(dc, cx, cy, h);
+        } else if (cat == 3) {                  // rain -> cloud + drops
+            drawCloud(dc, cx, cy - h * 0.12, h * 0.9);
+            var pw = h / 10.0; if (pw < 1) { pw = 1; }
+            dc.setPenWidth(pw);
+            dc.drawLine(cx - h * 0.18, cy + h * 0.22, cx - h * 0.24, cy + h * 0.44);
+            dc.drawLine(cx + h * 0.02, cy + h * 0.22, cx - h * 0.04, cy + h * 0.44);
+            dc.drawLine(cx + h * 0.22, cy + h * 0.22, cx + h * 0.16, cy + h * 0.44);
+        } else if (cat == 4) {                  // snow -> cloud + flakes
+            drawCloud(dc, cx, cy - h * 0.12, h * 0.9);
+            dc.fillCircle(cx - h * 0.18, cy + h * 0.32, h * 0.06);
+            dc.fillCircle(cx + h * 0.02, cy + h * 0.36, h * 0.06);
+            dc.fillCircle(cx + h * 0.22, cy + h * 0.32, h * 0.06);
+        } else if (cat == 5) {                  // storm -> cloud + lightning bolt
+            drawCloud(dc, cx, cy - h * 0.12, h * 0.9);
+            dc.fillPolygon([[cx + h * 0.10, cy + h * 0.16], [cx - h * 0.14, cy + h * 0.42],
+                            [cx - h * 0.01, cy + h * 0.42], [cx - h * 0.10, cy + h * 0.52],
+                            [cx + h * 0.18, cy + h * 0.18], [cx + h * 0.03, cy + h * 0.18]]);
+        } else if (cat == 6) {                  // fog -> cloud + haze lines
+            drawCloud(dc, cx, cy - h * 0.16, h * 0.8);
+            var pwf = h / 11.0; if (pwf < 1) { pwf = 1; }
+            dc.setPenWidth(pwf);
+            dc.drawLine(cx - h * 0.34, cy + h * 0.28, cx + h * 0.30, cy + h * 0.28);
+            dc.drawLine(cx - h * 0.24, cy + h * 0.44, cx + h * 0.34, cy + h * 0.44);
+        } else if (cat == 7) {                  // windy -> flowing lines
+            var pww = h / 10.0; if (pww < 1) { pww = 1; }
+            dc.setPenWidth(pww);
+            dc.drawLine(cx - h * 0.40, cy - h * 0.16, cx + h * 0.20, cy - h * 0.16);
+            dc.drawArc(cx + h * 0.20, cy - h * 0.05, h * 0.11, Graphics.ARC_CLOCKWISE, 90, 250);
+            dc.drawLine(cx - h * 0.40, cy + h * 0.08, cx + h * 0.30, cy + h * 0.08);
+            dc.drawArc(cx + h * 0.30, cy + h * 0.19, h * 0.11, Graphics.ARC_CLOCKWISE, 90, 250);
+            dc.drawLine(cx - h * 0.40, cy + h * 0.30, cx + h * 0.08, cy + h * 0.30);
+        } else {
+            drawCloud(dc, cx, cy, h);
+        }
     }
 
     function resolveColor(id as Number) as Number {
