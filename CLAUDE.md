@@ -29,14 +29,14 @@ suite; behavior beyond "it compiles" must be checked in the simulator/device.
 
 | File | Responsibility |
 |---|---|
-| `source/understatedApp.mc` | `AppBase` lifecycle; builds the view and settings menu; re-resolves the theme on `onSettingsChanged`. |
-| `source/understatedView.mc` | All rendering: theme resolution, the programmatic dial (`drawBackground`), date, hands, and the battery gauge. |
-| `source/understatedSettings.mc` | `UnderstatedSettings` (persists `colorTheme` to `Application.Storage`) plus the on-device `Menu2` and its delegate. |
-| `resources/` | Strings, the launcher icon, and an intentionally-empty `WatchFace` layout (everything is drawn manually; there are no background bitmaps). |
+| `source/understatedApp.mc` | `AppBase` lifecycle; builds the view; reloads settings and re-resolves the theme on `onSettingsChanged`. |
+| `source/understatedView.mc` | All rendering: theme resolution, the programmatic dial (`drawBackground`), the four data fields (`drawDataFields`) with their icons (`drawIcon`/`drawWeather`), the hands, and the battery gauge. |
+| `source/understatedSettings.mc` | `UnderstatedSettings` — reads `colorTheme`, `secondHand`, and the four data-field slots from `Application.Properties` (configured from the phone via the Connect IQ app-settings form). No on-device menu. |
+| `resources/` | Strings, the launcher icon, an intentionally-empty `WatchFace` layout (everything is drawn manually; no background bitmaps), and `settings/` (the phone settings form `settings.xml` + property defaults `properties.xml`). |
 
 ## Theme scheme
 
-`colorTheme` is a single stored integer (`Application.Storage`, key
+`colorTheme` is a single stored integer (`Application.Properties`, key
 `"colorTheme"`):
 
 - **0–6** → a fixed color (see table).
@@ -65,6 +65,28 @@ fr55 watch-face memory budget (it caused intermittent out-of-memory crashes).
 | 6 | Black/Silver | Fri |
 | 7 | Multi (rotates) | — |
 
+## Data fields
+
+Up to four data fields are drawn inboard of the numerals at 12/3/6/9
+(`drawDataFields`). Each slot has four `Application.Properties` keys —
+`s{12,3,6,9}{Show,Fmt,Col,Size}` — for content, format, color, and size:
+
+- **Show** — off, or one of ~18 metrics (date, body battery, heart rate,
+  steps, …, weather temperature/condition). SensorHistory-backed metrics (body
+  battery, stress, Pulse Ox, elevation, pressure, temperature) read the newest
+  non-null sample via `newestData` (a small `:period` window, walking past null
+  slots so a gap doesn't show `--`).
+- **Fmt** — value, label + value, icon + value, or icon only.
+- **Col** — fixed colors plus three per-theme tiers: `Accent`, `Muted`, and
+  `Second hand` (resolved in `resolveColor`).
+- **Size** — Tiny / Small / Medium / Large.
+
+Icons are drawn programmatically (`drawIcon`); the weather-condition icon is
+condition-aware (`drawWeather` / `weatherCategory`: sun, partly cloudy, rain,
+snow, …). The 3 and 9 o'clock slots right/left-justify to hug their numeral and
+grow inward; fields are nudged onto the numeral's centerline. `SensorHistory`
+needs the manifest permission of the same name.
+
 ## Battery-as-hour-hand
 
 In `drawHands`, the hour hand is split: the segment from the hub outward
@@ -83,11 +105,11 @@ Power modes are tracked with `isLowPower` (set in `onEnterSleep`/`onExitSleep`)
 and `burnInProtect` (cached from `getDeviceSettings().requiresBurnInProtection`):
 
 - **High power** (awake): `onUpdate` runs ~1/sec, so the full dial draws plus a
-  second hand (`drawSecondHand`, theme accent color), gated by `!isLowPower &&
-  mySettings.secondHand`. The second hand is a user setting (Storage key
-  `secondHand`); when unset it defaults by device class via `defaultSecondHand()`
-  — on at >=104KB watch-face memory (capable), off below (fr55 96KB) where the
-  1/sec redraw is sluggish.
+  second hand (`drawSecondHand`, in the per-theme second-hand color), gated by
+  `!isLowPower && mySettings.showSecondHand()`. The second hand is a user
+  setting (Properties key `secondHand`: Auto/On/Off); Auto resolves by device
+  class — on at >=104KB watch-face memory (capable), off below (fr55 96KB)
+  where the 1/sec redraw is sluggish.
 - **Low power, MIP** (`burnInProtect == false`): full dial, no second hand
   (`onUpdate` is ~1/min, so a second hand would freeze).
 - **Low power, AMOLED** (`burnInProtect == true`): `drawLowPower` renders a
