@@ -11,7 +11,11 @@ battery gauge, over a Roman-numeral dial in one of seven solid colors.
   off on constrained ones (e.g. fr55), where the 1/sec redraw is sluggish.
 - **Battery-as-hour-hand** — the "discharged" portion of the hour hand is drawn
   in a separate accent color, so the hand fills back up as the watch charges.
-- **Date** — day-of-month, drawn to the right of center.
+- **Data fields** — up to four configurable slots at the 12, 3, 6, and 9
+  positions, set inboard of the numerals. Each picks a metric (date, body
+  battery, heart rate, steps, calories, weather, and more), a format (value,
+  label + value, icon + value, or icon only — with condition-aware weather
+  icons), a color, and a size. Defaults to just the date at 3 o'clock.
 - **Color themes** — pick a fixed color, or "Multi" to rotate the color by day
   of week. See [CLAUDE.md](CLAUDE.md) for the theme/day mapping.
 - **AMOLED always-on** — on burn-in-protected displays, low power draws a
@@ -57,5 +61,10 @@ the watch, long-press **UP** → **Watch Face** → select **Understated**.
 
 ## Settings
 
-Press the menu/select on the watch to open **Settings → Color** and cycle
-through: Blue, Green, Purple, Red, Yellow, Black/Gold, Black/Silver, Multi.
+Configured from your phone in the **Garmin Connect** app (Connect IQ app
+settings) — there is no on-device menu. You can set:
+
+- **Color theme** — Blue, Green, Purple, Red, Yellow, Black/Gold, Black/Silver,
+  or Multi (rotates daily).
+- **Second hand** — Auto (by device), On, or Off.
+- **Each data field** (12 / 3 / 6 / 9) — metric, format, color, and size.
