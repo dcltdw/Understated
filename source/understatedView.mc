@@ -579,10 +579,18 @@ class UnderstatedView extends WatchUi.View {
     }
 
     // Newest sample value from a SensorHistory iterator, or null.
+    // Returns the most recent sample that actually has data, skipping null
+    // slots (SensorHistory's newest entry is often an empty gap, which would
+    // otherwise show "--" even when a recent reading exists). Pair with a
+    // small :period window so there are a few samples to walk back through.
     function newestData(iter) {
         if (iter == null) { return null; }
         var s = iter.next();
-        return (s != null) ? s.data : null;
+        while (s != null) {
+            if (s.data != null) { return s.data; }
+            s = iter.next();
+        }
+        return null;
     }
 
     function fmtInt(d) {
@@ -607,23 +615,23 @@ class UnderstatedView extends WatchUi.View {
 
         if (Toybox has :SensorHistory) {
             if (show == 2 && SensorHistory has :getBodyBatteryHistory) {
-                return fmtInt(newestData(SensorHistory.getBodyBatteryHistory({:period=>1, :order=>SensorHistory.ORDER_NEWEST_FIRST})));
+                return fmtInt(newestData(SensorHistory.getBodyBatteryHistory({:period=>10, :order=>SensorHistory.ORDER_NEWEST_FIRST})));
             }
             if (show == 10 && SensorHistory has :getStressHistory) {
-                return fmtInt(newestData(SensorHistory.getStressHistory({:period=>1, :order=>SensorHistory.ORDER_NEWEST_FIRST})));
+                return fmtInt(newestData(SensorHistory.getStressHistory({:period=>10, :order=>SensorHistory.ORDER_NEWEST_FIRST})));
             }
             if (show == 11 && SensorHistory has :getOxygenSaturationHistory) {
-                return fmtInt(newestData(SensorHistory.getOxygenSaturationHistory({:period=>1, :order=>SensorHistory.ORDER_NEWEST_FIRST})));
+                return fmtInt(newestData(SensorHistory.getOxygenSaturationHistory({:period=>10, :order=>SensorHistory.ORDER_NEWEST_FIRST})));
             }
             if (show == 12 && SensorHistory has :getElevationHistory) {
-                return fmtInt(newestData(SensorHistory.getElevationHistory({:period=>1, :order=>SensorHistory.ORDER_NEWEST_FIRST})));
+                return fmtInt(newestData(SensorHistory.getElevationHistory({:period=>10, :order=>SensorHistory.ORDER_NEWEST_FIRST})));
             }
             if (show == 13 && SensorHistory has :getPressureHistory) {
-                var p = newestData(SensorHistory.getPressureHistory({:period=>1, :order=>SensorHistory.ORDER_NEWEST_FIRST}));
+                var p = newestData(SensorHistory.getPressureHistory({:period=>10, :order=>SensorHistory.ORDER_NEWEST_FIRST}));
                 return (p != null) ? (p / 100.0).format("%d") : null;            // Pa -> hPa
             }
             if (show == 14 && SensorHistory has :getTemperatureHistory) {
-                var t = newestData(SensorHistory.getTemperatureHistory({:period=>1, :order=>SensorHistory.ORDER_NEWEST_FIRST}));
+                var t = newestData(SensorHistory.getTemperatureHistory({:period=>10, :order=>SensorHistory.ORDER_NEWEST_FIRST}));
                 return (t != null) ? tempStr(t, ds) : null;
             }
         }
