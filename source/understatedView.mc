@@ -73,7 +73,7 @@ class UnderstatedView extends WatchUi.View {
                 break;
             case 1: // Green
                 background_color = 0x008000; // darker green on full-color; fr55 quantizes to its palette green
-                numerals_color = 0xFFFF00; // yellow numerals (cyan unreadable on green), white date
+                numerals_color = 0xC0C0C0; // silver-grey numerals (green-and-silver); fr55 quantizes to white
                 date_color = Graphics.COLOR_WHITE;
                 hands_color = Graphics.COLOR_WHITE;
                 battery_discharged_color = 0x4E5A88; // muted slate blue (was dk blue)
