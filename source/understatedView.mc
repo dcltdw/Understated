@@ -21,6 +21,8 @@ class UnderstatedView extends WatchUi.View {
     var numerals_color;
     var date_color;
     var hands_color;
+    var hour_color;               // charged hour hand (= hands_color except Custom theme)
+    var minute_color;             // minute hand (= hands_color except Custom theme)
     var battery_discharged_color; // battery sliver on the hour hand
     var muted_color;              // per-theme low-contrast data-field color
     var accent_color;             // per-theme bold data-field color
@@ -131,6 +133,18 @@ class UnderstatedView extends WatchUi.View {
                 accent_color = 0xAEB2B8;
                 secondhand_color = 0xDEE2E8;
                 break;
+            case 8: // Custom (user-entered hex; overrides everything)
+                background_color = mySettings.customBg;
+                numerals_color = mySettings.customNumerals;
+                date_color = mySettings.customNumerals;
+                hands_color = mySettings.customHour;
+                hour_color = mySettings.customHour;
+                minute_color = mySettings.customMinute;
+                battery_discharged_color = mySettings.customBattery;
+                secondhand_color = mySettings.customSecond;
+                muted_color = mySettings.customNumerals;
+                accent_color = mySettings.customNumerals;
+                break;
             default: // invalid colorTheme: recover to Blue
                 System.println("error in View!  target_theme = " + target_theme);
                 mySettings.colorTheme = 0;
@@ -143,6 +157,12 @@ class UnderstatedView extends WatchUi.View {
                 muted_color = 0x7E84C8;
                 accent_color = 0xB6BCEC;
                 secondhand_color = 0xDCDFFA;
+        }
+        // Non-custom themes use one hand color; mirror it into hour/minute
+        // (the Custom theme sets them separately above).
+        if (target_theme != 8) {
+            hour_color = hands_color;
+            minute_color = hands_color;
         }
         last_theme = target_theme;
 
@@ -328,7 +348,9 @@ class UnderstatedView extends WatchUi.View {
             if (show == 0) { continue; }
             var val = getValueString(show, _now);
             if (val == null) { val = "--"; }
-            var color = resolveColor(mySettings.slotCol[i]);
+            var color = (mySettings.colorTheme == 8)
+                ? mySettings.customSlot[i]
+                : resolveColor(mySettings.slotCol[i]);
             var font = resolveFont(mySettings.slotSize[i]);
             var fmt = mySettings.slotFmt[i];
 
@@ -759,11 +781,13 @@ class UnderstatedView extends WatchUi.View {
         dc.setPenWidth(hourW);
         dc.drawLine(hourHandStartX, hourHandStartY, unchargedHourHandEndX, unchargedHourHandEndY);
 
-        dc.setColor(hands_color, Graphics.COLOR_TRANSPARENT);
-
+        // Minute hand.
+        dc.setColor(minute_color, Graphics.COLOR_TRANSPARENT);
         dc.setPenWidth(minW);
         dc.drawLine(minHandStartX, minHandStartY, minHandEndX, minHandEndY);
 
+        // Charged portion of the hour hand.
+        dc.setColor(hour_color, Graphics.COLOR_TRANSPARENT);
         dc.setPenWidth(hourW);
         dc.drawLine(unchargedHourHandEndX, unchargedHourHandEndY, maxHourHandEndX, maxHourHandEndY);
     }
