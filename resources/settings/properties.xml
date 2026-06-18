@@ -35,4 +35,16 @@
     <property id="s9Fmt"  type="number">0</property>
     <property id="s9Col"  type="number">0</property>
     <property id="s9Size" type="number">1</property>
+
+    <!-- Custom theme (colorTheme 8): RRGGBB hex strings -->
+    <property id="customBg"       type="string">000000</property>
+    <property id="customNumerals" type="string">FFFFFF</property>
+    <property id="customHour"     type="string">FFFFFF</property>
+    <property id="customBattery"  type="string">FF8800</property>
+    <property id="customMinute"   type="string">FFFFFF</property>
+    <property id="customSecond"   type="string">FF0000</property>
+    <property id="customS12"      type="string">FFFFFF</property>
+    <property id="customS3"       type="string">FFFFFF</property>
+    <property id="customS6"       type="string">FFFFFF</property>
+    <property id="customS9"       type="string">FFFFFF</property>
 </properties>

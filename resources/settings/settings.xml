@@ -9,6 +9,7 @@
             <listEntry value="5">Black/Gold</listEntry>
             <listEntry value="6">Black/Silver</listEntry>
             <listEntry value="7">Multi</listEntry>
+            <listEntry value="8">Custom (hex colors below)</listEntry>
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.secondHand" title="Second hand">
@@ -245,5 +246,35 @@
             <listEntry value="2">Medium</listEntry>
             <listEntry value="3">Large</listEntry>
         </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.customBg" title="Custom theme — Background (hex RRGGBB)">
+        <settingConfig type="alphaNumeric" />
+    </setting>
+    <setting propertyKey="@Properties.customNumerals" title="Custom theme — Numerals (hex RRGGBB)">
+        <settingConfig type="alphaNumeric" />
+    </setting>
+    <setting propertyKey="@Properties.customHour" title="Custom theme — Hour hand (hex RRGGBB)">
+        <settingConfig type="alphaNumeric" />
+    </setting>
+    <setting propertyKey="@Properties.customBattery" title="Custom theme — Battery gauge (hex RRGGBB)">
+        <settingConfig type="alphaNumeric" />
+    </setting>
+    <setting propertyKey="@Properties.customMinute" title="Custom theme — Minute hand (hex RRGGBB)">
+        <settingConfig type="alphaNumeric" />
+    </setting>
+    <setting propertyKey="@Properties.customSecond" title="Custom theme — Second hand (hex RRGGBB)">
+        <settingConfig type="alphaNumeric" />
+    </setting>
+    <setting propertyKey="@Properties.customS12" title="Custom theme — 12 o'clock field (hex RRGGBB)">
+        <settingConfig type="alphaNumeric" />
+    </setting>
+    <setting propertyKey="@Properties.customS3" title="Custom theme — 3 o'clock field (hex RRGGBB)">
+        <settingConfig type="alphaNumeric" />
+    </setting>
+    <setting propertyKey="@Properties.customS6" title="Custom theme — 6 o'clock field (hex RRGGBB)">
+        <settingConfig type="alphaNumeric" />
+    </setting>
+    <setting propertyKey="@Properties.customS9" title="Custom theme — 9 o'clock field (hex RRGGBB)">
+        <settingConfig type="alphaNumeric" />
     </setting>
 </settings>
