@@ -9,7 +9,7 @@ Add up to four data fields, at the 12, 3, 6, and 9 positions. Each one is your c
 
 More:
 • Battery-as-hour-hand — a subtle, built-in battery gauge
-• 8 dial colors: Blue, Green, Purple, Red, Yellow, Black/Gold, Black/Silver, and Multi (a different color each day)
+• 8 dial colors: Blue, Green, Purple, Red, Yellow, Black/Gold, Black/Silver, and Multi (a different color each day) — plus a Custom theme where you set every color yourself with hex codes
 • Optional second hand while the watch is awake
 • Crisp on every display — MIP and AMOLED, round and rectangular
 • AMOLED always-on, burn-in safe
@@ -22,7 +22,8 @@ Version history
 
 0.9.1 — Initial release.
 0.9.2 — Phone settings and four configurable data fields (12/3/6/9); refined theme colors (richer green, burnished gold, truer purple, silver numerals); per-field Muted / Accent / Second-hand colors; softer second hand and battery gauge.
+0.9.3 — Condition-aware weather icons; new "Icon" (glyph-only) field format.
 
-What's new in 0.9.3
-• Weather (condition) data field now shows a matching icon — sunny, partly cloudy, cloudy, rain, snow, storm, fog, or windy.
-• New "Icon" field format — show just the glyph, with no text.
+What's new in 0.9.4
+• New Custom theme — set every color yourself with hex codes: background, numerals, hour hand, minute hand, second hand, battery gauge, and each data field.
+• Green theme refreshed with a green-and-silver look.

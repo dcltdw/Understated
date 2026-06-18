@@ -24,7 +24,8 @@ Rebuild by re-capturing per-theme stills and reassembling with ImageMagick.
 
 ## Screenshots
 
-One image per color theme (`1-blue` … `7-black_silver`).
+One image per color theme (`1-blue` … `7-black_silver`), plus `sim-8-custom`
+(the Custom theme: black background, red numerals, varied other colors).
 
 ### `screenshots/sim/` — true simulator captures (use these for the store)
 

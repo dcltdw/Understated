@@ -16,8 +16,10 @@ battery gauge, over a Roman-numeral dial in one of seven solid colors.
   battery, heart rate, steps, calories, weather, and more), a format (value,
   label + value, icon + value, or icon only — with condition-aware weather
   icons), a color, and a size. Defaults to just the date at 3 o'clock.
-- **Color themes** — pick a fixed color, or "Multi" to rotate the color by day
-  of week. See [CLAUDE.md](CLAUDE.md) for the theme/day mapping.
+- **Color themes** — pick a fixed color, "Multi" to rotate the color by day of
+  week, or "Custom" to set every color (background, numerals, each hand, the
+  battery gauge, and each data field) with your own hex codes. See
+  [CLAUDE.md](CLAUDE.md) for the theme/day mapping.
 - **AMOLED always-on** — on burn-in-protected displays, low power draws a
   mostly-black screen with thin hands and a small date, shifted over time.
 
@@ -65,6 +67,6 @@ Configured from your phone in the **Garmin Connect** app (Connect IQ app
 settings) — there is no on-device menu. You can set:
 
 - **Color theme** — Blue, Green, Purple, Red, Yellow, Black/Gold, Black/Silver,
-  or Multi (rotates daily).
+  Multi (rotates daily), or Custom (your own hex colors, set in the fields below).
 - **Second hand** — Auto (by device), On, or Off.
 - **Each data field** (12 / 3 / 6 / 9) — metric, format, color, and size.
