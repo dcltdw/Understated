@@ -16,6 +16,8 @@ More:
 
 Configure everything from your phone in the Garmin Connect app — dial color, second hand, and all four data fields.
 
+A note on Multi: the daily rotation isn't random. Monday through Thursday go alphabetically — Blue, Green, Purple, Red. Friday and Saturday add a little bling — Black/Silver, then Black/Gold. And Sunday is Yellow. Sun-day. Get it?
+
 ——————————————————————————
 
 Version history
