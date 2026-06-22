@@ -17,16 +17,19 @@ class UnderstatedView extends WatchUi.View {
 
     var mySettings;
     var last_theme = -1;
-    var background_color;
-    var numerals_color;
-    var date_color;
-    var hands_color;
-    var hour_color;               // charged hour hand (= hands_color except Custom theme)
-    var minute_color;             // minute hand (= hands_color except Custom theme)
-    var battery_discharged_color; // battery sliver on the hour hand
-    var muted_color;              // per-theme low-contrast data-field color
-    var accent_color;             // per-theme bold data-field color
-    var secondhand_color;         // per-theme highest-contrast color (second hand + data fields)
+    // Seeded with a legible white-on-black default so the dial can always draw
+    // something even if theme resolution never runs (e.g. it threw in
+    // initialize); the normal themes overwrite these in check_for_day_advance.
+    var background_color = 0x000000;
+    var numerals_color = 0xFFFFFF;
+    var date_color = 0xFFFFFF;
+    var hands_color = 0xFFFFFF;
+    var hour_color = 0xFFFFFF;     // charged hour hand (= hands_color except Custom theme)
+    var minute_color = 0xFFFFFF;   // minute hand (= hands_color except Custom theme)
+    var battery_discharged_color = 0xC77B45; // battery sliver on the hour hand
+    var muted_color = 0xFFFFFF;    // per-theme low-contrast data-field color
+    var accent_color = 0xFFFFFF;   // per-theme bold data-field color
+    var secondhand_color = 0xFFFFFF; // per-theme highest-contrast color (second hand + data fields)
     var isLowPower = false;       // true while the watch is in low-power (sleep) mode
     var burnInProtect = false;    // device requires AMOLED burn-in protection
 
@@ -171,10 +174,18 @@ class UnderstatedView extends WatchUi.View {
 
     function initialize() {
         View.initialize();
-        mySettings = new UnderstatedSettings();
-        burnInProtect = (System.getDeviceSettings().requiresBurnInProtection == true);
-        var _now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
-        check_for_day_advance(true, _now);
+        // Anything past View.initialize() that throws on-device would kill the
+        // face before it ever shows ("disappears on confirmation"). Contain it:
+        // mySettings may stay null and the colors keep their seeded defaults, and
+        // onUpdate's null-guards + try/catch still render a plain clock.
+        try {
+            mySettings = new UnderstatedSettings();
+            burnInProtect = (System.getDeviceSettings().requiresBurnInProtection == true);
+            var _now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
+            check_for_day_advance(true, _now);
+        } catch (e) {
+            System.println("Understated init failed: " + e.getErrorMessage());
+        }
     }
 
     // Load your resources here
@@ -186,36 +197,77 @@ class UnderstatedView extends WatchUi.View {
     // the state of this View and prepare it to be shown. This includes
     // loading resources into memory.
     function onShow() as Void {
-        mySettings.loadLocal();
-        var _now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
-        check_for_day_advance(true, _now);
+        if (mySettings == null) { return; }
+        try {
+            mySettings.loadLocal();
+            var _now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
+            check_for_day_advance(true, _now);
+        } catch (e) {
+            System.println("Understated onShow failed: " + e.getErrorMessage());
+        }
         return;
     }
 
     // Update the view
     function onUpdate(dc as Dc) as Void {
-        // Call the parent onUpdate function to redraw the layout
-        View.onUpdate(dc);
+        // The whole render is contained: an unhandled throw here would let the
+        // OS kill the face on its first frame ("disappears on confirmation").
+        // On any failure we fall back to drawSafe -- a plain clock -- so the
+        // face stays alive, and we log the error so it still surfaces in the
+        // device log / store error report.
+        try {
+            // Call the parent onUpdate function to redraw the layout
+            View.onUpdate(dc);
 
-        var _now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
-        check_for_day_advance(false, _now);
+            var _now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
+            check_for_day_advance(false, _now);
 
-        if (isLowPower and burnInProtect) {
-            // AMOLED always-on: burn-in-safe minimal render.
-            drawLowPower(dc, _now);
-            return;
+            if (isLowPower and burnInProtect) {
+                // AMOLED always-on: burn-in-safe minimal render.
+                drawLowPower(dc, _now);
+                return;
+            }
+
+            drawBackground(dc);
+            drawDataFields(dc, _now);
+            drawHands(dc, _now.hour, _now.min);
+
+            // Second hand only while awake. In high power onUpdate runs ~1/sec so it
+            // ticks; in low power onUpdate is ~1/min (it would freeze) and AMOLED uses
+            // the burn-in-safe path above, so it's intentionally omitted there.
+            if (!isLowPower and mySettings != null and mySettings.showSecondHand()) {
+                drawSecondHand(dc, _now.sec);
+            }
+        } catch (e) {
+            System.println("Understated onUpdate failed: " + e.getErrorMessage());
+            drawSafe(dc);
         }
+    }
 
-        drawBackground(dc);
-        drawDataFields(dc, _now);
-        drawHands(dc, _now.hour, _now.min);
+    // Last-resort frame: a plain white-on-black clock drawn with only dc,
+    // System.getClockTime(), and literals -- no settings, theme state, or
+    // sensors -- so it cannot itself throw. Keeps the face on screen if the
+    // normal render path fails on a device.
+    function drawSafe(dc as Dc) as Void {
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
+        dc.clear();
 
-        // Second hand only while awake. In high power onUpdate runs ~1/sec so it
-        // ticks; in low power onUpdate is ~1/min (it would freeze) and AMOLED uses
-        // the burn-in-safe path above, so it's intentionally omitted there.
-        if (!isLowPower and mySettings.showSecondHand()) {
-            drawSecondHand(dc, _now.sec);
-        }
+        var w = dc.getWidth();
+        var h = dc.getHeight();
+        var ox = w / 2;
+        var oy = h / 2;
+
+        var t = System.getClockTime();
+        var hr = t.hour % 12;
+        var minTheta = (15 - t.min) * 6 * Math.PI / 180;
+        var hourTheta = (3 - (hr + t.min / 60.0)) * 30 * Math.PI / 180;
+
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.setPenWidth(3);
+        dc.drawLine(ox, oy, ox + Math.cos(hourTheta) * w * 0.23, oy - Math.sin(hourTheta) * w * 0.23);
+        dc.setPenWidth(2);
+        dc.drawLine(ox, oy, ox + Math.cos(minTheta) * w * 0.38, oy - Math.sin(minTheta) * w * 0.38);
+        dc.setPenWidth(1);
     }
 
     // Some devices/firmware (incl. fr55) invoke onPartialUpdate during

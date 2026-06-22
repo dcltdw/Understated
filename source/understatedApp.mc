@@ -13,7 +13,7 @@ class UnderstatedApp extends Application.AppBase {
     }
 
     function onSettingsChanged() {
-        if(view!=null) {
+        if(view!=null && view.mySettings!=null) {
             view.mySettings.loadLocal();
             var _now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
             view.check_for_day_advance(true, _now);
