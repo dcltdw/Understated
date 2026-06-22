@@ -10,3 +10,7 @@ bin/
 # Local install/util scripts and editor backups
 install.sh
 *~
+
+# Per-project signing-key path (machine-local; keep out of git). launch.json
+# stays tracked; only settings.json (which holds monkeyc.developerKeyPath) is ignored.
+.vscode/settings.json
