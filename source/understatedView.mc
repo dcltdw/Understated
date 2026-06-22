@@ -188,9 +188,12 @@ class UnderstatedView extends WatchUi.View {
         }
     }
 
-    // Load your resources here
+    // No layout resource: the whole face is drawn manually in onUpdate, so we
+    // deliberately do NOT call setLayout. Loading a layout here was pure dead
+    // weight, and invoking the layout symbol at the install-time auto-launch was
+    // the suspected "File Not Found / Failed invoking <symbol>" crash on some
+    // devices (fenix 6 family). With no layout to load, there's nothing to fail.
     function onLayout(dc as Dc) as Void {
-        setLayout(Rez.Layouts.WatchFace(dc));
     }
 
     // Called when this View is brought to the foreground. Restore
