@@ -32,7 +32,7 @@ suite; behavior beyond "it compiles" must be checked in the simulator/device.
 | `source/understatedApp.mc` | `AppBase` lifecycle; builds the view; reloads settings and re-resolves the theme on `onSettingsChanged`. |
 | `source/understatedView.mc` | All rendering: theme resolution, the programmatic dial (`drawBackground`), the four data fields (`drawDataFields`) with their icons (`drawIcon`/`drawWeather`), the hands, and the battery gauge. |
 | `source/understatedSettings.mc` | `UnderstatedSettings` — reads `colorTheme`, `secondHand`, and the four data-field slots from `Application.Properties` (configured from the phone via the Connect IQ app-settings form). No on-device menu. |
-| `resources/` | Strings, the launcher icon, an intentionally-empty `WatchFace` layout (everything is drawn manually; no background bitmaps), and `settings/` (the phone settings form `settings.xml` + property defaults `properties.xml`). |
+| `resources/` | Strings, the launcher icon, and `settings/` (the phone settings form `settings.xml` + property defaults `properties.xml`). No layout resource and no background bitmaps: the whole face is drawn manually in `onUpdate`, and `onLayout` deliberately does not call `setLayout` (loading a layout was dead weight, and invoking the layout symbol at the install-time auto-launch was implicated in a first-launch crash on some devices). |
 
 ## Theme scheme
 
