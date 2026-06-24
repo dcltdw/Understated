@@ -232,7 +232,19 @@ class UnderstatedView extends WatchUi.View {
             }
 
             drawBackground(dc);
-            drawDataFields(dc, _now);
+
+            // Data fields read sensors (SensorHistory / Weather / Activity).
+            // That's cheap on the fast awake CPU but is the heavy part of the
+            // render. In low power the CPU is throttled and the per-update
+            // execution budget is far tighter, so doing that sensor I/O in the
+            // ~1/min low-power update can blow the budget and make the OS
+            // silently kill the face on the awake->sleep transition (seen on
+            // fenix 6 Pro: face renders fine, then disappears after ~1 min, no
+            // error logged). So draw the data fields only while awake; asleep
+            // they're blank and return on the next wrist-raise.
+            if (!isLowPower) {
+                drawDataFields(dc, _now);
+            }
             drawHands(dc, _now.hour, _now.min);
 
             // Second hand only while awake. In high power onUpdate runs ~1/sec so it
