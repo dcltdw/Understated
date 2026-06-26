@@ -17,6 +17,7 @@ class UnderstatedApp extends Application.AppBase {
             view.mySettings.loadLocal();
             var _now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
             view.check_for_day_advance(true, _now);
+            view.df_min = -1;  // settings changed; recompute cached data-field values
             WatchUi.requestUpdate();
         }
     }

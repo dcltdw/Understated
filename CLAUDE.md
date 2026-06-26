@@ -117,8 +117,13 @@ and `burnInProtect` (cached from `getDeviceSettings().requiresBurnInProtection`)
   burn-in-safe frame — black background, thin hands, small date, shifted a
   couple pixels each minute.
 
-`onPartialUpdate` stays a no-op (its absence caused a low-power crash on fr55);
-all real drawing happens in `onUpdate`.
+`onPartialUpdate` stays an empty no-op but must stay defined; all real drawing
+happens in `onUpdate`. (Removing it once caused a "Symbol Not Found / Failed
+invoking" crash on fr55, fw 11.03, at the per-minute low-power update — the
+system invokes the callback, and a missing one crashes — so keeping it defined,
+even empty, is the fix, confirmed on device. Separately, the MIP power budget is
+a 30 ms average execution-time limit on `onPartialUpdate` only; a full-screen
+`onUpdate` redraw is not power-budgeted.)
 
 Build for all targets / sweep with SDK 9.1.0 (`-d <device>` per manifest entry;
 the `.iq` export `-e` builds every product at once).
