@@ -41,6 +41,9 @@ class UnderstatedView extends WatchUi.View {
     var df_text = [null, null, null, null];
     var df_min = -1;
 
+    // DIAGNOSTIC (breadcrumb build only): frame counter for CIQ_LOG.txt markers.
+    var frame = 0;
+
     // Resolves the active theme from the user's setting and sets the matching
     // colors, but only when the theme actually changes. colorTheme 0-6 pins
     // a fixed color; colorTheme 7 ("Multi") rotates the color by day of week.
@@ -208,6 +211,7 @@ class UnderstatedView extends WatchUi.View {
     // the state of this View and prepare it to be shown. This includes
     // loading resources into memory.
     function onShow() as Void {
+        System.println("SHOW f=" + frame);
         if (mySettings == null) { return; }
         try {
             mySettings.loadLocal();
@@ -227,28 +231,38 @@ class UnderstatedView extends WatchUi.View {
         // On any failure we fall back to drawSafe -- a plain clock -- so the
         // face stays alive, and we log the error so it still surfaces in the
         // device log / store error report.
+        // DIAGNOSTIC breadcrumbs -> CIQ_LOG.txt. The face dies silently (no
+        // exception), so the last line logged before the watch reverts tells us
+        // where it died; mem is used bytes -- watch it across frames for growth.
+        frame += 1;
+        System.println("U" + frame + " start lp=" + (isLowPower ? 1 : 0)
+            + " mem=" + System.getSystemStats().usedMemory);
         try {
             var _now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
             check_for_day_advance(false, _now);
+            System.println("  theme ok");
 
             if (isLowPower and burnInProtect) {
                 // AMOLED always-on: burn-in-safe minimal render.
                 drawLowPower(dc, _now);
+                System.println("U" + frame + " end (lowpower-amoled)");
                 return;
             }
 
-            drawBackground(dc);
-            drawDataFields(dc, _now);
-            drawHands(dc, _now.hour, _now.min);
+            drawBackground(dc);                  System.println("  bg ok");
+            drawDataFields(dc, _now);            System.println("  df ok");
+            drawHands(dc, _now.hour, _now.min);  System.println("  hands ok");
 
             // Second hand only while awake. In high power onUpdate runs ~1/sec so it
             // ticks; in low power onUpdate is ~1/min (it would freeze) and AMOLED uses
             // the burn-in-safe path above, so it's intentionally omitted there.
             if (!isLowPower and mySettings != null and mySettings.showSecondHand()) {
                 drawSecondHand(dc, _now.sec);
+                System.println("  sec ok");
             }
+            System.println("U" + frame + " end");
         } catch (e) {
-            System.println("Understated onUpdate failed: " + e.getErrorMessage());
+            System.println("U" + frame + " THREW: " + e.getErrorMessage());
             drawSafe(dc);
         }
     }
@@ -287,23 +301,34 @@ class UnderstatedView extends WatchUi.View {
     // face is minute-resolution, so there's nothing to draw between minutes; the
     // once-per-minute onUpdate does the full redraw.
     function onPartialUpdate(dc as Dc) as Void {
+        System.println("pu f=" + frame);
+    }
+
+    // DIAGNOSTIC: should never fire -- we draw nothing in onPartialUpdate. If it
+    // does, the partial-update power budget is somehow in play after all.
+    function onPowerBudgetExceeded(powerInfo as WatchUi.WatchFacePowerInfo) as Void {
+        System.println("BUDGET f=" + frame + " limit=" + powerInfo.executionTimeLimit
+            + " avg=" + powerInfo.executionTimeAverage);
     }
 
     // Called when this View is removed from the screen. Save the
     // state of this View here. This includes freeing resources from
     // memory.
     function onHide() as Void {
+        System.println("HIDE f=" + frame);
         return;
     }
 
     // The user has just looked at their watch. Timers and animations may be started here.
     function onExitSleep() as Void {
+        System.println("WAKE f=" + frame);
         isLowPower = false;
         WatchUi.requestUpdate();
     }
 
     // Terminate any active timers and prepare for slow updates.
     function onEnterSleep() as Void {
+        System.println("SLEEP f=" + frame);
         isLowPower = true;
         WatchUi.requestUpdate();
     }
