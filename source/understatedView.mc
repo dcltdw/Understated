@@ -33,6 +33,14 @@ class UnderstatedView extends WatchUi.View {
     var isLowPower = false;       // true while the watch is in low-power (sleep) mode
     var burnInProtect = false;    // device requires AMOLED burn-in protection
 
+    // Cached data-field value strings, recomputed only when the minute changes
+    // (or on settings change / onShow, which reset df_min to -1). drawDataFields
+    // runs every onUpdate -- 1 Hz while the second hand is on -- but the backing
+    // sensors (SensorHistory / Weather / ActivityMonitor) are minute-resolution,
+    // so reading them every frame is wasted work.
+    var df_text = [null, null, null, null];
+    var df_min = -1;
+
     // Resolves the active theme from the user's setting and sets the matching
     // colors, but only when the theme actually changes. colorTheme 0-6 pins
     // a fixed color; colorTheme 7 ("Multi") rotates the color by day of week.
@@ -205,6 +213,7 @@ class UnderstatedView extends WatchUi.View {
             mySettings.loadLocal();
             var _now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
             check_for_day_advance(true, _now);
+            df_min = -1;  // settings may have changed which fields show; recompute
         } catch (e) {
             System.println("Understated onShow failed: " + e.getErrorMessage());
         }
@@ -219,9 +228,6 @@ class UnderstatedView extends WatchUi.View {
         // face stays alive, and we log the error so it still surfaces in the
         // device log / store error report.
         try {
-            // Call the parent onUpdate function to redraw the layout
-            View.onUpdate(dc);
-
             var _now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
             check_for_day_advance(false, _now);
 
@@ -273,10 +279,13 @@ class UnderstatedView extends WatchUi.View {
         dc.setPenWidth(1);
     }
 
-    // Some devices/firmware (incl. fr55) invoke onPartialUpdate during
-    // low-power updates; omitting it was implicated in a low-power crash.
-    // This face is minute-resolution, so there's nothing to draw between
-    // minutes -- the once-per-minute onUpdate does the full redraw.
+    // Empty no-op, but it must stay defined. Removing onPartialUpdate (it was
+    // once dropped to avoid per-second redraws) caused a "Symbol Not Found /
+    // Failed invoking" crash on fr55 (fw 11.03) at the per-minute low-power
+    // update -- the system invokes the callback, and a missing one crashes.
+    // Keeping it defined, even empty, fixed that (confirmed on device). This
+    // face is minute-resolution, so there's nothing to draw between minutes; the
+    // once-per-minute onUpdate does the full redraw.
     function onPartialUpdate(dc as Dc) as Void {
     }
 
@@ -398,10 +407,21 @@ class UnderstatedView extends WatchUi.View {
         var leftLimit  = (cx - numR) + dc.getTextWidthInPixels(NUMERALS[8], Graphics.FONT_TINY) / 2.0 + gap;
         var tinyH = dc.getFontHeight(Graphics.FONT_TINY);
 
+        // Recompute the (minute-resolution) data-field values only when the
+        // minute rolls over; per-second redraws reuse the cache instead of
+        // re-reading sensors every frame.
+        if (_now.min != df_min) {
+            for (var j = 0; j < 4; j += 1) {
+                var s = mySettings.slotShow[j];
+                df_text[j] = (s == 0) ? null : getValueString(s, _now);
+            }
+            df_min = _now.min;
+        }
+
         for (var i = 0; i < 4; i += 1) {
             var show = mySettings.slotShow[i];
             if (show == 0) { continue; }
-            var val = getValueString(show, _now);
+            var val = df_text[i];
             if (val == null) { val = "--"; }
             var color = (mySettings.colorTheme == 8)
                 ? mySettings.customSlot[i]
