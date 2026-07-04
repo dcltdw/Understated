@@ -128,27 +128,28 @@ a 30 ms average execution-time limit on `onPartialUpdate` only; a full-screen
 Build for all targets / sweep with SDK 9.1.0 (`-d <device>` per manifest entry;
 the `.iq` export `-e` builds every product at once).
 
-## AI-collaboration conventions
+## Collaboration & release
 
-This repo follows a subset of
-`~/Github/annotated-maps/docs/AI-COLLABORATION-CONVENTIONS.md` (the master
-record — edit that doc, not this replica, when a rule changes). Adopted here:
+Universal collaboration rules — branch→PR→wait, small single-purpose PRs,
+PR-body sections (`Files changed` with `(new)`/`(deleted)`/(modified), `Work
+breakdown`, `Test expectations`, `Operational impact`), board flow, secret scan,
+`Co-Authored-By` model stamp, verify-before-done — come from the machine-global
+import in `~/.claude/CLAUDE.md` (`@~/Github/dcltdw/claude/universal.md`), so they
+are not duplicated here.
 
-- **Rule 1** — size each ticket to one PR.
-- **Rule 2 / 3** — every issue lives on the Understated project board; move
-  status Todo → In Progress (PR opens) → Done (PR merges).
-- **Rule 4** — PR bodies include `Files changed`, `Work breakdown`,
-  `Test expectations` (only when failures are expected), and
-  `Operational impact` (rebuild/reinstall/storage-migration notes for a watch
-  face). In `Files changed`, annotate each entry's status — `(new)` /
-  `(deleted)` / (modified) — so additions and deletions are visible at a
-  glance, not just modifications.
-- **Rule 5** — stamp commits with the current AI model in `Co-Authored-By:`.
-- **Rule 6** — scan each diff for secrets before pushing.
-- **Rule 8** — this file is a thin replica pointing back to the master doc.
+The Garmin store-release process is shared (edit the shared doc, not a copy):
 
-Skipped (not applicable at this scale): CI-extension (no CI), test-expectations
-tables by default, midpoint audits, and burst mode.
+@~/Github/dcltdw/claude/garmin-release.md
+
+### Understated release supplement
+- **Signing key:** the project's Garmin developer key — its path lives in the
+  git-ignored `.vscode/settings.json` (and in Claude memory), kept out of this
+  public repo on purpose. Verify it by RSA-modulus match against the published
+  `bin/Understated.prg` before every build; the store binds the app to this key
+  pair, so never build with another project's key.
+- **Targets:** ~126 products via the `-e` export; `minApiLevel 3.4.0`.
+- **Store copy:** `store/description.txt` ("What's new" + version history,
+  4000-char cap) and `store/README.md`; screenshots via `store/gen_screens.py`.
 
 ### Project board
 
