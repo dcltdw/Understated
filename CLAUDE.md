@@ -135,7 +135,8 @@ PR-body sections (`Files changed` with `(new)`/`(deleted)`/(modified), `Work
 breakdown`, `Test expectations`, `Operational impact`), board flow, secret scan,
 `Co-Authored-By` model stamp, verify-before-done — come from the machine-global
 import in `~/.claude/CLAUDE.md` (`@~/Github/dcltdw/claude/universal.md`), so they
-are not duplicated here.
+are not duplicated here. For this watch face, a PR's **Operational impact**
+section means rebuild / reinstall / storage-migration notes.
 
 The Garmin store-release process is shared (edit the shared doc, not a copy):
 
