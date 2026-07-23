@@ -134,7 +134,7 @@ Universal collaboration rules — branch→PR→wait, small single-purpose PRs,
 PR-body sections (`Files changed` with `(new)`/`(deleted)`/(modified), `Work
 breakdown`, `Test expectations`, `Operational impact`), board flow, secret scan,
 `Co-Authored-By` model stamp, verify-before-done — come from the machine-global
-import in `~/.claude/CLAUDE.md` (`@~/Github/dcltdw/claude/universal.md`), so they
+import in `~/.claude/CLAUDE.md` (`@~/.claude/dcltdw/AGENTS.md`), so they
 are not duplicated here. For this watch face, a PR's **Operational impact**
 section means rebuild / reinstall / storage-migration notes.
 
