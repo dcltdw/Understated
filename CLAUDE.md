@@ -140,7 +140,7 @@ section means rebuild / reinstall / storage-migration notes.
 
 The Garmin store-release process is shared (edit the shared doc, not a copy):
 
-@~/Github/dcltdw/claude/garmin-release.md
+@~/.claude/dcltdw/garmin-release.md
 
 ### Understated release supplement
 - **Signing key:** the project's Garmin developer key — its path lives in the
