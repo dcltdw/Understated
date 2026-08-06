@@ -70,3 +70,18 @@ settings) — there is no on-device menu. You can set:
   Multi (rotates daily), or Custom (your own hex colors, set in the fields below).
 - **Second hand** — Auto (by device), On, or Off.
 - **Each data field** (12 / 3 / 6 / 9) — metric, format, color, and size.
+
+## License
+
+GPL-3.0-or-later — see [LICENSE](LICENSE).
+
+The repository carried no licence before, which meant "all rights reserved" by
+default; this grants rights rather than removing any. Copyleft applies to the
+source: a fork distributed to others has to ship its source under the same
+terms. Wearing the watch face is unrestricted.
+
+No third-party material is bundled — the launcher icon, backgrounds, and store
+assets are all original, and the face uses the device's built-in fonts rather
+than shipping any.
+
+Contributions are accepted under the same licence as the project.
