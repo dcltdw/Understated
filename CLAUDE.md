@@ -138,9 +138,8 @@ import in `~/.claude/CLAUDE.md` (`@~/.claude/dcltdw/AGENTS.md`), so they
 are not duplicated here. For this watch face, a PR's **Operational impact**
 section means rebuild / reinstall / storage-migration notes.
 
-The Garmin store-release process is shared (edit the shared doc, not a copy):
-
-@~/.claude/dcltdw/garmin-release.md
+Store releases: use the `dcltdw:garmin-release` skill; project specifics in
+the release supplement below.
 
 ### Understated release supplement
 - **Signing key:** the project's Garmin developer key — its path lives in the
@@ -149,6 +148,9 @@ The Garmin store-release process is shared (edit the shared doc, not a copy):
   `bin/Understated.prg` before every build; the store binds the app to this key
   pair, so never build with another project's key.
 - **Targets:** ~126 products via the `-e` export; `minApiLevel 3.4.0`.
+- **Build output:** `bin/` (git-ignored) — the store package
+  `bin/Understated.iq`, the single-device `bin/Understated.prg`, and per-device
+  builds such as `bin/Understated-fr70.prg`.
 - **Store copy:** `store/description.txt` ("What's new" + version history,
   4000-char cap) and `store/README.md`; screenshots via `store/gen_screens.py`.
 
